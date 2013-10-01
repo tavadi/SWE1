@@ -136,11 +136,10 @@ namespace Server
             Console.ForegroundColor = ConsoleColor.White;
             Console.WriteLine();
 
-
+            string line;
             // Read the Message from Client
-            while ((sr.ReadLine()) != "")
+            while ((line = sr.ReadLine()) != "")
             {
-                string line = sr.ReadLine();
                 Console.WriteLine(line);
             }
 
@@ -155,7 +154,8 @@ namespace Server
             
             
             separator();
-            
+
+
 
             s.Close();
             stream.Close();
