@@ -17,7 +17,9 @@ namespace Server
         bool _ServerIsRunning;
 
         // Konstruktor
-        public Server()     {    _ServerIsRunning = true;   }
+        public Server()     
+        { 
+        }
 
 
         // SETTER
@@ -32,57 +34,134 @@ namespace Server
             return _ServerIsRunning;
         }
 
+        public void separator()
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine();
+
+            for (int i = 0; i < 80; i++)
+            {
+                Console.Write("-");
+            }
+
+            Console.WriteLine();
+            Console.ForegroundColor = ConsoleColor.White;
+        }
+
+
+        public string getMessage()
+        {
+            string message =
+                "<html>" +
+                    "<head>" +
+                        "<title>SensorCloud</title>" +
+                    "</head>" +
+                    "<body>" +
+                        "<h1>Done</h1>" +
+                    "</body>" +
+                "</html>";
+
+            return message;
+        }
+
+        public void sendMessage(StreamWriter sw, string message)
+        {
+            sw.WriteLine("HTTP/1.1 200 OK");
+            sw.WriteLine("Server: Apache/1.3.29 (Unix) PHP/4.3.4");
+            sw.WriteLine("Content-Length: " + message.Length);
+            sw.WriteLine("Content-Language: de");
+            sw.WriteLine("Connection: close");
+            sw.WriteLine("Content-Type: text/html");
+            sw.WriteLine("");
+            sw.WriteLine(message);
+
+            sw.Flush();
+        }
 
 
 
 
+
+
+
+       
         // Create Server-Thread (MainThread) for listening
         public void StartServer()
         {
-            new Thread(StartServerThread).Start();  
+            Thread thread = new Thread(StartServerThread);
+            thread.Start();
         }
 
-
+        
         // ServerThread ... listening the whole time
         public void StartServerThread()
         {
+            Thread.CurrentThread.Name = "ServerThread";
+
             TcpListener listener = new TcpListener(IPAddress.Any, 8080);
             listener.Start();
 
-            Console.WriteLine("Server is running at port 8080 ...");
-            Console.WriteLine("Server is waiting for Connection ...");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine();
+            Console.WriteLine("Server is running and listen at port 8080 ...");
+            Console.WriteLine("Waiting for connection ...");
 
-             
+            separator();
+
             while (true)
             {
-                // If Client connect --> new ClientThread
                 Socket s = listener.AcceptSocket();
 
-                ParameterizedThreadStart ThreadStart = new ParameterizedThreadStart(ClientThread);
-                Thread newClientThread = new Thread(ClientThread);
-                newClientThread.Start(s);
+                ParameterizedThreadStart threadStart = new ParameterizedThreadStart(StartClientThread);
+                Thread thread = new Thread(threadStart);
+                thread.Start(s);
             }
+              
         }
 
 
-
-        public void ClientThread(object SessionClient)
+        // Each Client --> new ClientThread
+        public void StartClientThread(object socket)
         {
-            Socket s = (Socket)SessionClient;
+            Thread.CurrentThread.Name = "ClientThread";
+
+            Socket s = (Socket)socket;
+
             NetworkStream stream = new NetworkStream(s);
             StreamReader sr = new StreamReader(stream);
             StreamWriter sw = new StreamWriter(stream);
-            Console.WriteLine("Connection accepted from " + s.RemoteEndPoint);
 
-            
-            while (!sr.EndOfStream)
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("Connection accepted from " + s.RemoteEndPoint);
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.WriteLine();
+
+
+            // Read the Message from Client
+            while ((sr.ReadLine()) != "")
             {
                 string line = sr.ReadLine();
                 Console.WriteLine(line);
             }
+
+
+            string message = getMessage();      // Create Message from Server to Client
+            sendMessage(sw, message);           // Send the Message to the Client
+
+            Console.WriteLine();
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("Conneciton close from " + s.RemoteEndPoint);
+            Console.ForegroundColor = ConsoleColor.White;
+            
+            
+            separator();
             
 
-            
+            s.Close();
+            stream.Close();
+            sr.Close();
+            sw.Close();            
         }
+         
     }
 }
