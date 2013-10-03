@@ -14,24 +14,26 @@ namespace Server
 {
     public class Server
     {
-        bool _ServerIsRunning;
+
+        private string _message;
+        private bool _isRunning;
+
 
         // Konstruktor
         public Server()     
         { 
         }
 
-
-        // SETTER
-        public void setServerStatus(bool status)
+        public bool isRunning
         {
-            _ServerIsRunning = status;
-        }
-
-        // GETTER
-        public bool getServerStatus()
-        {
-            return _ServerIsRunning;
+            get
+            {
+                return _isRunning;
+            }
+            set
+            {
+                this._isRunning = value;
+            }
         }
 
         public void separator()
@@ -45,35 +47,43 @@ namespace Server
             }
 
             Console.WriteLine();
-            Console.ForegroundColor = ConsoleColor.White;
+            Console.ForegroundColor = ConsoleColor.Green;
         }
 
-
-        public string getMessage()
+        public string Message
         {
-            string message =
-                "<html>" +
-                    "<head>" +
-                        "<title>SensorCloud</title>" +
-                    "</head>" +
-                    "<body>" +
-                        "<h1>Done</h1>" +
-                    "</body>" +
-                "</html>";
+            get
+            {
+                return _message;
+            }
 
-            return message;
+            set
+            {
+                _message =
+                @"
+                <html>
+                    <head> 
+                        <title>SensorCloud</title> 
+                    </head> 
+                    <body>
+                        <h1> "
+                            + value + @" 
+                        </h1> 
+                    </body> 
+                </html>";
+            }
         }
 
-        public void sendMessage(StreamWriter sw, string message)
+        public void sendMessage(StreamWriter sw)
         {
             sw.WriteLine("HTTP/1.1 200 OK");
             sw.WriteLine("Server: Apache/1.3.29 (Unix) PHP/4.3.4");
-            sw.WriteLine("Content-Length: " + message.Length);
+            sw.WriteLine("Content-Length: " + _message.Length);
             sw.WriteLine("Content-Language: de");
             sw.WriteLine("Connection: close");
             sw.WriteLine("Content-Type: text/html");
-            sw.WriteLine("");
-            sw.WriteLine(message);
+            sw.WriteLine();
+            sw.WriteLine(_message);
 
             sw.Flush();
         }
@@ -90,6 +100,8 @@ namespace Server
         {
             Thread thread = new Thread(StartServerThread);
             thread.Start();
+
+            _isRunning = true;
         }
 
         
@@ -131,31 +143,37 @@ namespace Server
             StreamReader sr = new StreamReader(stream);
             StreamWriter sw = new StreamWriter(stream);
 
+            /*
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("Connection accepted from " + s.RemoteEndPoint);
             Console.ForegroundColor = ConsoleColor.White;
             Console.WriteLine();
+            */
 
-            string line;
             // Read the Message from Client
-            while ((line = sr.ReadLine()) != "")
+            while (!sr.EndOfStream)
             {
+                string line = sr.ReadLine();
                 Console.WriteLine(line);
+                if (string.IsNullOrEmpty(line)) break;
             }
 
 
-            string message = getMessage();      // Create Message from Server to Client
-            sendMessage(sw, message);           // Send the Message to the Client
+            // Build a Message for the Client
+            string message = "Done!";
 
+            this.Message = message;      // Create Message from Server to Client
+            sendMessage(sw);           // Send the Message to the Client
+            
+            
+            /*
             Console.WriteLine();
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("Conneciton close from " + s.RemoteEndPoint);
             Console.ForegroundColor = ConsoleColor.White;
             
-            
             separator();
-
-
+            */
 
             s.Close();
             stream.Close();

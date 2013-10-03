@@ -19,7 +19,16 @@ namespace Server
 
             WebServer.StartServer();
 
+            while (WebServer.isRunning)
+            {
+                string input = Console.ReadLine();
+                Console.ForegroundColor = ConsoleColor.Green;
 
+                if (input == "exit")
+                {
+                    Environment.Exit(1);
+                }
+            }
             // Wait for Input
             Console.ReadLine();
         }
