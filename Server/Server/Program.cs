@@ -14,23 +14,25 @@ namespace Server
     {
         static void Main(string[] args)
         {
+            CServer WebServer = new CServer();
 
-            Server WebServer = new Server();
-
+            WebServer.ReadPlugins();
             WebServer.StartServer();
 
             while (WebServer.isRunning)
             {
                 string input = Console.ReadLine();
-                Console.ForegroundColor = ConsoleColor.Green;
 
                 if (input == "exit")
                 {
+                    //WebServer.isRunning = false;
                     Environment.Exit(1);
                 }
             }
             // Wait for Input
             Console.ReadLine();
+
+
         }
     }
 }
