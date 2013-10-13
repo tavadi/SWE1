@@ -19,7 +19,11 @@ namespace Server
             get;
             set;
         }
-        
-        void doSomething();
+
+        IList<string> doSomething
+        {
+            set;
+            get;
+        }
     }
 }

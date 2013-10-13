@@ -114,24 +114,25 @@ namespace Server
             StreamWriter sw = new StreamWriter(stream);
 
 
+            // New Request
             CRequest PluginName = new CRequest(sr);
             //Console.WriteLine(PluginName.PluginName);
 
             // Verhindert doppelte Ausgabe
-            if (PluginName.PluginName == null)
+            if (PluginName.Name == null)
             {
                 return;
             }
 
-            CPluginManager PluginManager = new CPluginManager(PluginName.PluginName);
+            // start PluginManager
+            CPluginManager PluginManager = new CPluginManager(PluginName.Name, PluginName.URL);
 
+            Console.WriteLine(PluginManager.Response);
             
-            
-            
-            // Build a Message for the Client
-            string message = "Done!";
+            // Response
+            IList<string> Response = (PluginManager.Response);
 
-            _Response.Message = message;      // Create Message from Server to Client
+            _Response.Message = Response;      // Create Message from Server to Client
             _Response.sendMessage(sw);        // Send the Message to the Client
             
             

@@ -13,7 +13,8 @@ namespace Server
         
         private string _PluginName = "CGetTemperatur";
         private bool _isPlugin = false;
-
+        private IList<string> _Parameter;
+        private IList<string> _Response;
 
 
 
@@ -40,10 +41,51 @@ namespace Server
         }
 
 
-        public void doSomething()
-        {
 
+        public IList<string> doSomething
+        {
+            set
+            {
+                _Parameter = value;
+            }
+
+            get
+            {
+                _Response = new List<string>();
+
+                // Parameter[0] == Jahr
+                // Parameter[1] == Monat
+                // Parameter[2] == Tag
+                
+                _Response.Add("JAHR: " + _Parameter[0]);
+                _Response.Add("MONAT: " + _Parameter[1]);
+                _Response.Add("TAG: " + _Parameter[2]);
+
+                return _Response;
+            }
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         /*
         private Random _rnd;

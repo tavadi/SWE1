@@ -12,109 +12,81 @@ namespace Server
     class CPluginManager
     {
         
-        private string _PluginName;
+        private string _Name;
         private IList<string> _Plugins;
-        //private bool _PluginExists = false;
-
+        private IList<string> _Parameter;
+        private IList<string> _Response;
 
         // Konstruktor
-        public CPluginManager(string PluginName)
+        public CPluginManager(string PluginName, IList<string> URL)
         {
-            _PluginName = PluginName;
+            _Name = PluginName;
+            _Parameter = URL;
             checkPlugin();
         }
         
         public void checkPlugin()
         {
+            // Navigate to Path (DLL-Files from Plugins)
             string path = Environment.CurrentDirectory + "\\Plugins\\";
 
+            // For each DLL-File
             foreach (string Plugin in System.IO.Directory.GetFiles(path, "*.dll"))
             {
                 System.Reflection.Assembly myDllAssembly = System.Reflection.Assembly.LoadFile(Plugin);
 
-
-                //FILENAME
-                string result = Path.GetFileNameWithoutExtension(Plugin);
+                //filter FILENAME without Extension
+                string filename = Path.GetFileNameWithoutExtension(Plugin);
                 //Console.WriteLine(result);
 
-                Type type = myDllAssembly.GetType("Server." + result);
+                // Server.CGetTemperatur
+                // Server.CStatic
+                Type type = myDllAssembly.GetType("Server." + filename);
 
-
+                // Create Instance 
                 object StaticInstance = Activator.CreateInstance(type);
-                PropertyInfo CorrectPlugin = type.GetProperty("PluginName");
-                PropertyInfo isPlugin = type.GetProperty("isPlugin");
 
-                string value = (string)CorrectPlugin.GetValue(StaticInstance, null);
-                
-                if (value == _PluginName)
+                // Functions in each Plugin --> Interface
+                PropertyInfo PluginName = type.GetProperty("PluginName");
+                PropertyInfo isPlugin = type.GetProperty("isPlugin");
+                PropertyInfo doSomething = type.GetProperty("doSomething");
+
+
+                // Call function PluginName and return value
+                string value = (string)PluginName.GetValue(StaticInstance, null);
+
+                // If filename is the same as PluginName in URL --> Set true
+                if (filename == _Name)
                 {
                     isPlugin.SetValue(StaticInstance, true, null);
+                    doSomething.SetValue(StaticInstance, _Parameter, null);
 
-                    /*
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("TRUE");
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    */
-                }
-                else
-                {
-                    /*
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("FALSE");
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    */
+                    _Response = (IList<string>)doSomething.GetValue(StaticInstance, null);
                 }
 
+                
+
+                // Write true or false
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.WriteLine((bool)isPlugin.GetValue(StaticInstance, null));
                 Console.ForegroundColor = ConsoleColor.Green;
 
+                
+            }
+        }
+
+        public IList<string> Response
+        {
+            get
+            {
+                return _Response;
             }
         }
         
 
 
-
-/*        public void checkPlugin(string PluginName, IList<string> _URL)
-        {
-            
-            ReadPlugins();
-
-            for (int i = 0; i < _Plugins.Count(); i++)
-            {
-                if (PluginName == _Plugins[i])
-                {
-                    Console.WriteLine("Plugin ist vorhanden " + PluginName);
-                    _PluginExists = true;
-                    break;
-                }
-            }
-
-            if (_PluginExists == true)
-            {
-                
-                switch (PluginName)
-                {
-                    case _Plugins[0]:
-                        Console.WriteLine("Temp");
-                        break;
-
-                    case :
-                        Console.WriteLine("Static");
-                        break;
-
-                    default:
-                        Console.WriteLine("Wrong Plugin");
-                        break;
-                }
-                
-            }
-       
-        }
-*/
-
         // ############################################################################################################
-        // Read txt-File
+        // Read txt-File with Pluginnames and save it into List _Plugins
         private void ReadPlugins()
         {
             string line;

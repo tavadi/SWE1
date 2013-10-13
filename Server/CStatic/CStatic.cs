@@ -13,6 +13,7 @@ namespace Server
 
         private string _PluginName = "CStatic";
         private bool _isPlugin = false;
+        private IList<string> _Parameter;
 
 
         public string PluginName
@@ -39,10 +40,19 @@ namespace Server
         }
 
 
-        public void doSomething()
+        public IList<string> doSomething
         {
+            set
+            {
+                _Parameter = value;
+            }
 
+            get
+            {
+                return _Parameter;
+            }
         }
+
 
     }
 }
