@@ -16,7 +16,6 @@ namespace Server
         {
             CServer WebServer = new CServer();
 
-            WebServer.ReadPlugins();
             WebServer.StartServer();
 
             while (WebServer.isRunning)

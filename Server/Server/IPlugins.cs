@@ -8,5 +8,13 @@ namespace Server
 {
     interface IPlugins
     {
+        /*
+        boolean isityou(string plugin)
+        {if plugin == "Plug1" return true else false}
+          
+        
+         * reflections 
+         * */
+
     }
 }

@@ -22,8 +22,6 @@ namespace Server
         //private string _message;
         private bool _isRunning;
         private Response _Response;
-        private List<string> _Plugins;
-        private string _PluginName;
 
 
         // ############################################################################################################ 
@@ -116,42 +114,19 @@ namespace Server
             StreamWriter sw = new StreamWriter(stream);
 
 
-            // Read the Message from Client
-            while (!sr.EndOfStream)
-            {
-                string line = sr.ReadLine();
-                //Console.WriteLine(line);
+            CRequest PluginName = new CRequest(sr);
+            Console.WriteLine(PluginName.PluginName);
 
-                string url = HttpUtility.UrlDecode(line);
-                //Console.WriteLine(url);
+            //CPluginManager PluginManager = new CPluginManager();
 
-                var array = url.Split('/', ' ');
-                for (int i = 0; i < array.Length; i++)
-                {
-                    if (array[i] == "GET")
-                    {
-                        _PluginName = array[i + 2];
-                    }
-                }
-
-                if (string.IsNullOrEmpty(line)) break;
-            }
-
-
-            // FAVICON-THREAD wird beendet
-            if (_PluginName == "favicon.ico")
-            {
-                return;
-            }
-
-            Console.WriteLine(_PluginName);
-
-
+            
+            
+            
             // Build a Message for the Client
             string message = "Done!";
 
             _Response.Message = message;      // Create Message from Server to Client
-            _Response.sendMessage(sw);           // Send the Message to the Client
+            _Response.sendMessage(sw);        // Send the Message to the Client
             
             
             s.Close();
@@ -160,27 +135,5 @@ namespace Server
             sw.Close();            
         }
          
-
-        // ############################################################################################################
-        // Read txt-File
-        public void ReadPlugins()
-        {
-            string line;
-            int counter = 0;
-
-            _Plugins = new List<string>();
-
-
-            StreamReader file = new StreamReader("../../Plugins.txt");
-
-            while ((line = file.ReadLine()) != null)
-            {
-                //Console.WriteLine(line);
-                _Plugins.Add(line);
-                counter++;
-            }
-
-            file.Close();
-        }
     }
 }

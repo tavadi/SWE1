@@ -1,0 +1,4 @@
+C:\Users\Daniel\Documents\GitHub\SWE1\Server\CStatic\bin\Debug\CStatic.dll
+C:\Users\Daniel\Documents\GitHub\SWE1\Server\CStatic\bin\Debug\CStatic.pdb
+C:\Users\Daniel\Documents\GitHub\SWE1\Server\CStatic\obj\Debug\CStatic.dll
+C:\Users\Daniel\Documents\GitHub\SWE1\Server\CStatic\obj\Debug\CStatic.pdb
