@@ -6,12 +6,13 @@ using System.Threading.Tasks;
 using System.Timers;
 using Server;
 
+
 namespace Server
 {
-    public class CStatic : IPlugins
+    public class CGetTemperatur : IPlugins
     {
-
-        private string _PluginName = "CStatic";
+        
+        private string _PluginName = "CGetTemperatur";
         private bool _isPlugin = false;
 
 

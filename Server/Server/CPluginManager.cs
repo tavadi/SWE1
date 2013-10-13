@@ -9,50 +9,74 @@ using System.Reflection;
 
 namespace Server
 {
-   class CPluginManager
+    class CPluginManager : IPlugins
     {
-
+       private string _PluginName;
        private IList<string> _Plugins;
-       private bool _PluginExists = false;
-
+       //private bool _PluginExists = false;
 
 
         // Konstruktor
-        public CPluginManager()
+        public CPluginManager(string PluginName)
+        {
+            _PluginName = PluginName;
+            checkPlugin();
+        }
+
+        public void checkPlugin()
         {
             string path = Environment.CurrentDirectory + "\\Plugins\\";
 
             foreach (string Plugin in System.IO.Directory.GetFiles(path, "*.dll"))
             {
                 System.Reflection.Assembly myDllAssembly = System.Reflection.Assembly.LoadFile(Plugin);
-                
+
 
                 //FILENAME
                 string result = Path.GetFileNameWithoutExtension(Plugin);
-                Console.WriteLine(result);
+                //Console.WriteLine(result);
 
-
-                var stringName = "String";
-                var iwas = Type.GetType("System." + stringName);
-
-                
                 Type type = myDllAssembly.GetType("Server." + result);
 
+
                 object StaticInstance = Activator.CreateInstance(type);
-                PropertyInfo numberPropertyInfo = type.GetProperty("CorrectPlugin");
-               
+                PropertyInfo CorrectPlugin = type.GetProperty("CorrectPlugin");
+                PropertyInfo isPlugin = type.GetProperty("isPlugin");
 
+                string value = (string)CorrectPlugin.GetValue(StaticInstance, null);
                 
+                if (value == _PluginName)
+                {
+                    isPlugin.SetValue(StaticInstance, true, null);
 
-                Console.WriteLine(Plugin);
+                    /*
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("TRUE");
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    */
+                }
+                else
+                {
+                    /*
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("FALSE");
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    */
+                }
+
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine((bool)isPlugin.GetValue(StaticInstance, null));
+                Console.ForegroundColor = ConsoleColor.Green;
 
             }
-
         }
 
 
-        public void checkPlugin(string PluginName, IList<string> _URL)
+
+
+/*        public void checkPlugin(string PluginName, IList<string> _URL)
         {
+            
             ReadPlugins();
 
             for (int i = 0; i < _Plugins.Count(); i++)
@@ -67,7 +91,7 @@ namespace Server
 
             if (_PluginExists == true)
             {
-                /*
+                
                 switch (PluginName)
                 {
                     case _Plugins[0]:
@@ -82,10 +106,11 @@ namespace Server
                         Console.WriteLine("Wrong Plugin");
                         break;
                 }
-                 * */
+                
             }
+       
         }
-
+*/
 
         // ############################################################################################################
         // Read txt-File
