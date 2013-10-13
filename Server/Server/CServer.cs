@@ -117,7 +117,10 @@ namespace Server
             CRequest PluginName = new CRequest(sr);
             //Console.WriteLine(PluginName.PluginName);
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 81910c174ba64d9bdc3151812c4470b13f00d0b1
             // Verhindert doppelte Ausgabe
             if (PluginName.PluginName == null)
             {
