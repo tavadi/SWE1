@@ -12,6 +12,8 @@ namespace Server
     {
 
         private string _PluginName = "CStatic";
+        private bool _isPlugin = false;
+
 
         public string CorrectPlugin
         {
@@ -19,6 +21,20 @@ namespace Server
             {
                 Console.WriteLine("ICH BIN DAS PLUGIN: " + _PluginName);
                 return _PluginName;
+            }
+        }
+
+
+        public bool isPlugin
+        {
+            set
+            {
+                _isPlugin = value;
+            }
+
+            get
+            {
+                return _isPlugin;
             }
         }
 

@@ -40,24 +40,33 @@ namespace Server
 
 
                 object StaticInstance = Activator.CreateInstance(type);
-                PropertyInfo numberPropertyInfo = type.GetProperty("CorrectPlugin");
+                PropertyInfo CorrectPlugin = type.GetProperty("CorrectPlugin");
+                PropertyInfo isPlugin = type.GetProperty("isPlugin");
 
-                string value = (string)numberPropertyInfo.GetValue(StaticInstance, null);
-
+                string value = (string)CorrectPlugin.GetValue(StaticInstance, null);
+                
                 if (value == _PluginName)
                 {
+                    isPlugin.SetValue(StaticInstance, true, null);
+
+                    /*
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("TRUE");
                     Console.ForegroundColor = ConsoleColor.Green;
+                    */
                 }
                 else
                 {
+                    /*
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("FALSE");
                     Console.ForegroundColor = ConsoleColor.Green;
+                    */
                 }
 
-                //Console.WriteLine(Plugin);
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine((bool)isPlugin.GetValue(StaticInstance, null));
+                Console.ForegroundColor = ConsoleColor.Green;
 
             }
         }

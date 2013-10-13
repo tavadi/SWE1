@@ -12,6 +12,8 @@ namespace Server
     {
 
         private string _PluginName = "CGetTemperatur";
+        private bool _isPlugin = false;
+
 
         public string CorrectPlugin
         {
@@ -20,6 +22,25 @@ namespace Server
                 Console.WriteLine("ICH BIN DAS PLUGIN: " + _PluginName);
                 return _PluginName;
             }
+        }
+
+        public bool isPlugin
+        {
+            set
+            {
+                _isPlugin = value;
+            }
+
+            get
+            {
+                return _isPlugin;
+            }
+        }
+
+
+        public void doSomething()
+        {
+
         }
 
         /*

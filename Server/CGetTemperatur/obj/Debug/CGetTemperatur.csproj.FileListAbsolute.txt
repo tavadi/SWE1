@@ -2,3 +2,4 @@ C:\Users\Daniel\Documents\GitHub\SWE1\Server\CGetTemperatur\bin\Debug\CGetTemper
 C:\Users\Daniel\Documents\GitHub\SWE1\Server\CGetTemperatur\bin\Debug\CGetTemperatur.pdb
 C:\Users\Daniel\Documents\GitHub\SWE1\Server\CGetTemperatur\obj\Debug\CGetTemperatur.dll
 C:\Users\Daniel\Documents\GitHub\SWE1\Server\CGetTemperatur\obj\Debug\CGetTemperatur.pdb
+C:\Users\Daniel\Documents\GitHub\SWE1\Server\CGetTemperatur\obj\Debug\CGetTemperatur.csprojResolveAssemblyReference.cache
