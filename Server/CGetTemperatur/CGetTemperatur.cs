@@ -4,36 +4,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
-<<<<<<< HEAD
-using Server;
-=======
->>>>>>> 81910c174ba64d9bdc3151812c4470b13f00d0b1
 
 
 namespace Server
 {
-<<<<<<< HEAD
     public class CGetTemperatur : IPlugins
     {
         
-=======
-    public class CGetTemperatur
-    {
-
->>>>>>> 81910c174ba64d9bdc3151812c4470b13f00d0b1
         private string _PluginName = "CGetTemperatur";
         private bool _isPlugin = false;
 
 
-<<<<<<< HEAD
         public void checkPlugin()
         {
         }
 
 
 
-=======
->>>>>>> 81910c174ba64d9bdc3151812c4470b13f00d0b1
         public string CorrectPlugin
         {
             get

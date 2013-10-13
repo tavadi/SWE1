@@ -14,15 +14,9 @@ namespace Server
         private string _PluginName = "CStatic";
         private bool _isPlugin = false;
 
-<<<<<<< HEAD
-
         public void checkPlugin()
         {
         }
-
-
-=======
->>>>>>> 81910c174ba64d9bdc3151812c4470b13f00d0b1
 
         public string CorrectPlugin
         {
@@ -33,10 +27,7 @@ namespace Server
             }
         }
 
-<<<<<<< HEAD
-=======
 
->>>>>>> 81910c174ba64d9bdc3151812c4470b13f00d0b1
         public bool isPlugin
         {
             set
@@ -50,15 +41,12 @@ namespace Server
             }
         }
 
-<<<<<<< HEAD
 
         public void doSomething()
         {
 
         }
 
-=======
->>>>>>> 81910c174ba64d9bdc3151812c4470b13f00d0b1
         /*
         private Random _rnd;
         private float _number;
