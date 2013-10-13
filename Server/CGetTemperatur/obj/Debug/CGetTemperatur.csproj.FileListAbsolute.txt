@@ -3,8 +3,5 @@ C:\Users\Daniel\Documents\GitHub\SWE1\Server\CGetTemperatur\bin\Debug\CGetTemper
 C:\Users\Daniel\Documents\GitHub\SWE1\Server\CGetTemperatur\obj\Debug\CGetTemperatur.dll
 C:\Users\Daniel\Documents\GitHub\SWE1\Server\CGetTemperatur\obj\Debug\CGetTemperatur.pdb
 C:\Users\Daniel\Documents\GitHub\SWE1\Server\CGetTemperatur\obj\Debug\CGetTemperatur.csprojResolveAssemblyReference.cache
-<<<<<<< HEAD
 C:\Users\Daniel\Documents\GitHub\SWE1\Server\CGetTemperatur\bin\Debug\Server.exe
 C:\Users\Daniel\Documents\GitHub\SWE1\Server\CGetTemperatur\bin\Debug\Server.pdb
-=======
->>>>>>> 81910c174ba64d9bdc3151812c4470b13f00d0b1
