@@ -8,10 +8,10 @@ using System.Timers;
 
 namespace Server
 {
-    public class CStatic
+    public class CGetTemperatur
     {
 
-        private string _PluginName = "CStatic";
+        private string _PluginName = "CGetTemperatur";
 
         public string CorrectPlugin
         {

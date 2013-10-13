@@ -8,6 +8,9 @@ namespace Server
 {
     interface IPlugins
     {
+
+        void checkPlugin();
+        
         /*
         boolean isityou(string plugin)
         {if plugin == "Plug1" return true else false}

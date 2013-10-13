@@ -115,9 +115,9 @@ namespace Server
 
 
             CRequest PluginName = new CRequest(sr);
-            Console.WriteLine(PluginName.PluginName);
+            //Console.WriteLine(PluginName.PluginName);
 
-            //CPluginManager PluginManager = new CPluginManager();
+            CPluginManager PluginManager = new CPluginManager(PluginName.PluginName);
 
             
             
