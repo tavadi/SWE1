@@ -42,6 +42,12 @@
     <Compile Include="CStatic.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Server\Server.csproj">
+      <Project>{faedf3c2-f3b7-45be-a445-ac580299c8e6}</Project>
+      <Name>Server</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

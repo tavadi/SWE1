@@ -10,6 +10,5 @@ namespace Server
     {
 
         void checkPlugin();
-        
     }
 }

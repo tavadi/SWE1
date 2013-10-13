@@ -11,9 +11,10 @@ namespace Server
 {
     class CPluginManager : IPlugins
     {
-       private string _PluginName;
-       private IList<string> _Plugins;
-       //private bool _PluginExists = false;
+        
+        private string _PluginName;
+        private IList<string> _Plugins;
+        //private bool _PluginExists = false;
 
 
         // Konstruktor
@@ -22,7 +23,7 @@ namespace Server
             _PluginName = PluginName;
             checkPlugin();
         }
-
+        
         public void checkPlugin()
         {
             string path = Environment.CurrentDirectory + "\\Plugins\\";
@@ -70,7 +71,7 @@ namespace Server
 
             }
         }
-
+        
 
 
 
