@@ -9,6 +9,17 @@ namespace Server
     public interface IPlugins
     {
 
-        void checkPlugin();
+        string PluginName
+        {
+            get;
+        }
+
+        bool isPlugin
+        {
+            get;
+            set;
+        }
+        
+        void doSomething();
     }
 }

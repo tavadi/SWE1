@@ -14,13 +14,8 @@ namespace Server
         private string _PluginName = "CStatic";
         private bool _isPlugin = false;
 
-        
-        public void checkPlugin()
-        {
-        }
-        
 
-        public string CorrectPlugin
+        public string PluginName
         {
             get
             {

@@ -15,13 +15,9 @@ namespace Server
         private bool _isPlugin = false;
 
 
-        public void checkPlugin()
-        {
-        }
 
 
-
-        public string CorrectPlugin
+        public string PluginName
         {
             get
             {

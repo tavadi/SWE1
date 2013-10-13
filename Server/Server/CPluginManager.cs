@@ -9,7 +9,7 @@ using System.Reflection;
 
 namespace Server
 {
-    class CPluginManager : IPlugins
+    class CPluginManager
     {
         
         private string _PluginName;
@@ -41,7 +41,7 @@ namespace Server
 
 
                 object StaticInstance = Activator.CreateInstance(type);
-                PropertyInfo CorrectPlugin = type.GetProperty("CorrectPlugin");
+                PropertyInfo CorrectPlugin = type.GetProperty("PluginName");
                 PropertyInfo isPlugin = type.GetProperty("isPlugin");
 
                 string value = (string)CorrectPlugin.GetValue(StaticInstance, null);
