@@ -28,12 +28,12 @@ namespace Server
                 // URL Decode
                 _url = HttpUtility.UrlDecode(line);
                 //Console.WriteLine(url);
-
                 // Split 
                 _list = _url.Split('/', ' ');
 
 
                 // Aufgesplitted
+                
                 for (int i = 0; i < _list.Count; i++)
                 {
                     if ((_list[i] == "GET") && (_list[2] != "favicon.ico"))

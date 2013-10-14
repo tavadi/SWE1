@@ -45,7 +45,7 @@
     <Compile Include="CPluginManager.cs" />
     <Compile Include="CResponse.cs" />
     <Compile Include="CRequest.cs" />
-    <Compile Include="CTemp.cs" />
+    <Compile Include="CUrl.cs" />
     <Compile Include="IPlugins.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -53,9 +53,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Plugins.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using System.Web;
 
 namespace Server
 {
@@ -49,6 +50,9 @@ namespace Server
             sw.WriteLine("Connection: close");
             sw.WriteLine("Content-Type: text/html");
             sw.WriteLine();
+
+
+            //sw.WriteLine(HttpUtility.UrlEncode(msg));
             sw.WriteLine(msg);
 
             sw.Flush();

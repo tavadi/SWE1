@@ -13,7 +13,6 @@ namespace Server
     {
         
         private string _Name;
-        private IList<string> _Plugins;
         private IList<string> _Parameter;
         private IList<string> _Response;
 
@@ -46,12 +45,16 @@ namespace Server
                 // Create Instance 
                 object StaticInstance = Activator.CreateInstance(type);
 
+
                 // Functions in each Plugin --> Interface
                 PropertyInfo PluginName = type.GetProperty("PluginName");
                 PropertyInfo isPlugin = type.GetProperty("isPlugin");
                 PropertyInfo doSomething = type.GetProperty("doSomething");
 
+                
+                object blub = StaticInstance.GetType().GetProperties();
 
+                
                 // Call function PluginName and return value
                 string value = (string)PluginName.GetValue(StaticInstance, null);
 
@@ -83,29 +86,5 @@ namespace Server
             }
         }
         
-
-
-        // ############################################################################################################
-        // Read txt-File with Pluginnames and save it into List _Plugins
-        private void ReadPlugins()
-        {
-            string line;
-            int counter = 0;
-
-            _Plugins = new List<string>();
-
-
-            StreamReader file = new StreamReader("../../Plugins.txt");
-
-            while ((line = file.ReadLine()) != null)
-            {
-                //Console.WriteLine(line);
-                _Plugins.Add(line);
-                counter++;
-            }
-
-            file.Close();
-        }
-
     }
 }

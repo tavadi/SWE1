@@ -116,6 +116,8 @@ namespace Server
 
             // New Request
             CRequest PluginName = new CRequest(sr);
+            
+
             //Console.WriteLine(PluginName.PluginName);
 
             // Verhindert doppelte Ausgabe
@@ -127,8 +129,7 @@ namespace Server
             // start PluginManager
             CPluginManager PluginManager = new CPluginManager(PluginName.Name, PluginName.URL);
 
-            Console.WriteLine(PluginManager.Response);
-            
+             
             // Response
             IList<string> Response = (PluginManager.Response);
 
