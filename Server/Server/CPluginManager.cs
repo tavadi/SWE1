@@ -52,7 +52,7 @@ namespace Server
                 PropertyInfo doSomething = type.GetProperty("doSomething");
 
                 
-                object blub = StaticInstance.GetType().GetProperties();
+                //object blub = StaticInstance.GetType().GetProperties();
 
                 
                 // Call function PluginName and return value

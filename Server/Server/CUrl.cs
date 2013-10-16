@@ -9,9 +9,21 @@ namespace Server
 {
     public class CUrl
     {
-        public CUrl()
-        {
+        private string _DecodedUrl;
 
+        public string DecodeUrl
+        {
+            get
+            {
+                return _DecodedUrl;
+            }
+
+            set
+            {
+                // URL Decode
+                _DecodedUrl = HttpUtility.UrlDecode(value);
+                //Console.WriteLine(url);
+            }
         }
     }
 }

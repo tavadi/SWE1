@@ -12,9 +12,9 @@ namespace Server
     {
         private IList<string> _list;
         private List<string> _URLList;
-        private string _url;
+        private string _Url;
         private string _PluginName;
-
+        private CUrl _DecodeUrl;
 
         public CRequest(StreamReader sr)
         {
@@ -23,17 +23,14 @@ namespace Server
             {
                 string line = sr.ReadLine();
                 //Console.WriteLine(line);
+                _DecodeUrl = new CUrl();
 
-
-                // URL Decode
-                _url = HttpUtility.UrlDecode(line);
-                //Console.WriteLine(url);
+                _Url = _DecodeUrl.DecodeUrl = line;
                 // Split 
-                _list = _url.Split('/', ' ');
+                _list = _Url.Split('/', ' ');
 
 
-                // Aufgesplitted
-                
+                // Aufgesplitted           
                 for (int i = 0; i < _list.Count; i++)
                 {
                     if ((_list[i] == "GET") && (_list[2] != "favicon.ico"))
