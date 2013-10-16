@@ -22,18 +22,22 @@ namespace Server
             while (!sr.EndOfStream)
             {
                 string line = sr.ReadLine();
-                //Console.WriteLine(line);
-                _DecodeUrl = new CUrl();
+                Console.WriteLine(line);
 
+
+                // URL-Class
+                _DecodeUrl = new CUrl();
                 _Url = _DecodeUrl.DecodeUrl = line;
+
+
                 // Split 
-                _list = _Url.Split('/', ' ');
+                _list = _Url.Split('?', '=');
 
 
                 // Aufgesplitted           
                 for (int i = 0; i < _list.Count; i++)
                 {
-                    if ((_list[i] == "GET") && (_list[2] != "favicon.ico"))
+                    if ((_list[i] == "POST") && (_list[2] != "favicon.ico"))
                     {
                         _PluginName = _list[i + 2];
 

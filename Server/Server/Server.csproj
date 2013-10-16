@@ -42,6 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CFirstForm.cs" />
     <Compile Include="CPluginManager.cs" />
     <Compile Include="CResponse.cs" />
     <Compile Include="CRequest.cs" />

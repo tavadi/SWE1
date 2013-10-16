@@ -17,9 +17,19 @@ namespace Server
         {
             set
             {
-                foreach (string i in value)
+                try
                 {
-                    _message = _message + i + "<br />";
+                    foreach (string i in value)
+                    {
+                        _message = _message + i + "<br />";
+                    }
+                }
+                catch (NullReferenceException e)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("Es wurden keine Werte übergeben");
+                    Console.WriteLine(e);
+                    Console.ForegroundColor = ConsoleColor.Green;
                 }
             }
         }

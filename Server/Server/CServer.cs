@@ -114,6 +114,11 @@ namespace Server
             StreamWriter sw = new StreamWriter(stream);
 
 
+
+            // First Form
+            CFirstForm FirstForm = new CFirstForm();
+            FirstForm.CreateFirstForm(sw);
+
             // New Request
             CRequest PluginName = new CRequest(sr);
             
