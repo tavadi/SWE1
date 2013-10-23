@@ -14,7 +14,7 @@ namespace Server
     {
         static void Main(string[] args)
         {
-            CServer WebServer = new CServer();
+            Server WebServer = new Server();
 
             WebServer.StartServer();
 
