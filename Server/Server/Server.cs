@@ -143,7 +143,6 @@ namespace Server
 
                 _Response.Message = Response;      // Create Message from Server to Client
                 _Response.sendMessage(sw);         // Send the Message to the Client
-        
             }
 
             

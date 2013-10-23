@@ -34,7 +34,7 @@ namespace Server
             catch (IOException e)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
-                //Console.WriteLine("Error: File currently unavailable - LogFile.txt" + System.Environment.NewLine + e);
+                Console.WriteLine("Error: File currently unavailable - LogFile.txt" + System.Environment.NewLine + e);
                 Console.ForegroundColor = ConsoleColor.Green;
             }
         }

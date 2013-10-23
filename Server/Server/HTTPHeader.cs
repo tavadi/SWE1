@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using System.Web;
 
 namespace Server
 {
@@ -29,7 +30,7 @@ namespace Server
             _sw.WriteLine();
 
 
-            //sw.WriteLine(HttpUtility.UrlEncode(msg));
+            //_sw.WriteLine(HttpUtility.UrlEncode(_msg));
             _sw.WriteLine(_msg);
 
             _sw.Flush();

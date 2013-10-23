@@ -835,3 +835,24 @@
 23.10.2013 16:18:36: System.NullReferenceException: Der Objektverweis wurde nicht auf eine Objektinstanz festgelegt.
    bei Server.Response.set_Message(IList`1 value) in c:\Users\Daniel\Documents\GitHub\SWE1\Server\Server\Response.cs:Zeile 24.
 
+23.10.2013 17:47:03: System.NullReferenceException: Der Objektverweis wurde nicht auf eine Objektinstanz festgelegt.
+   bei Server.Response.set_Message(IList`1 value) in c:\Users\Daniel\Documents\GitHub\SWE1\Server\Server\Response.cs:Zeile 24.
+
+23.10.2013 17:47:05: System.NullReferenceException: Der Objektverweis wurde nicht auf eine Objektinstanz festgelegt.
+   bei Server.Response.set_Message(IList`1 value) in c:\Users\Daniel\Documents\GitHub\SWE1\Server\Server\Response.cs:Zeile 24.
+
+23.10.2013 17:56:24: System.NullReferenceException: Der Objektverweis wurde nicht auf eine Objektinstanz festgelegt.
+   bei Server.Response.set_Message(IList`1 value) in c:\Users\Daniel\Documents\GitHub\SWE1\Server\Server\Response.cs:Zeile 24.
+
+23.10.2013 17:57:07: System.NullReferenceException: Der Objektverweis wurde nicht auf eine Objektinstanz festgelegt.
+   bei Server.Response.set_Message(IList`1 value) in c:\Users\Daniel\Documents\GitHub\SWE1\Server\Server\Response.cs:Zeile 24.
+
+23.10.2013 17:58:25: System.NullReferenceException: Der Objektverweis wurde nicht auf eine Objektinstanz festgelegt.
+   bei Server.Response.set_Message(IList`1 value) in c:\Users\Daniel\Documents\GitHub\SWE1\Server\Server\Response.cs:Zeile 24.
+
+23.10.2013 18:17:08: System.NullReferenceException: Der Objektverweis wurde nicht auf eine Objektinstanz festgelegt.
+   bei Server.Response.set_Message(IList`1 value) in c:\Users\Daniel\Documents\GitHub\SWE1\Server\Server\Response.cs:Zeile 24.
+
+23.10.2013 18:38:30: System.NullReferenceException: Der Objektverweis wurde nicht auf eine Objektinstanz festgelegt.
+   bei Server.Response.set_Message(IList`1 value) in c:\Users\Daniel\Documents\GitHub\SWE1\Server\Server\Response.cs:Zeile 24.
+

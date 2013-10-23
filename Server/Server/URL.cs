@@ -10,13 +10,15 @@ namespace Server
 {
     public class Url
     {
+        private StreamReader _sr;
+
         private string _Url;
         private string _PluginName;
         private string _SplitFirst;
+        private string _DecodedUrl;
+
         private IList<string> _UrlSplit;
         private int _ContentLength;
-        private StreamReader _sr;
-        private string _DecodedUrl;
 
 
         public Url(string RequestUrl)
@@ -37,9 +39,9 @@ namespace Server
         {
             _UrlSplit = _Url.Split('?', '/');
 
+            // Pluginname steht immer an der 1ten Stelle
             _PluginName = _UrlSplit[1];
-            Console.WriteLine(_PluginName);
-
+ 
             if (Method == "GET")
             {
                 if (_UrlSplit.Count <= 2)
@@ -61,6 +63,7 @@ namespace Server
             }
             else if (Method == "POST")
             {
+                // Werte aus dem Body filtern
                 var buffer = new char[_ContentLength];
 
                 _sr.Read(buffer, 0, _ContentLength);
@@ -75,12 +78,6 @@ namespace Server
         }
 
 
- 
-
-
-
-
-
 
 
         public string Name
@@ -88,10 +85,6 @@ namespace Server
             get
             {
                 return _PluginName;
-            }
-
-            set
-            {
             }
         }
 
