@@ -47,8 +47,64 @@ namespace Server
                 <html>
                     <head> 
                         <title>SensorCloud</title> 
+
+                        <script src='//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js'></script>
+
+                        <style type=""text/css"">
+                            
+                            #container {
+                                width:100%;
+                            }
+                            
+                            .line {
+                                padding:10px;
+                            }
+
+                            .min20 {
+                                width:20%;
+                                float:left;
+                                background-color:#D8D8D8;
+                            }
+
+                            .group {
+                                background-color:red;
+                                visibility:hidden;
+                            }
+
+
+
+                        </style>
+
+
+
+
+                        <script language='javascript' type='text/javascript'>
+
+                            var groups = 0;
+
+                            function countGroups()
+                            {
+                                groups = $('.group').length
+
+                                //alert(groups);
+
+for (var i = 0; i <= groups; i++)
+{
+    $('#navigation').append(i + ' ');
+}
+                            }
+
+                        </script>
+
                     </head> 
-                    <body>"
+                    <body>
+                        <script>
+                        window.onload=countGroups;
+                        </script>
+
+                        <div id='navigation'></div>
+
+                        "
                         + _message +
                         @"
                     </body> 

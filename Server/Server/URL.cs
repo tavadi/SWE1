@@ -44,18 +44,25 @@ namespace Server
  
             if (Method == "GET")
             {
+                // Je nachdem wieviele Werte übergeben wurden, müssen die Parameter angepasst werden.
+                // [1] = PluginName
                 if (_UrlSplit.Count <= 2)
                 {
                     _DecodedUrl = HttpUtility.UrlDecode(_UrlSplit[1]);
                     _DecodedUrl = _DecodedUrl.Replace(" ", "");
                     _UrlSplit[1] = _DecodedUrl;
                 }
+
+                // [1] = Pluginname
+                // [2] = Parameter
                 else
                 {
                     _DecodedUrl = HttpUtility.UrlDecode(_UrlSplit[2]);
                     _DecodedUrl = _DecodedUrl.Replace(" ", "");
                     _UrlSplit[2] = _DecodedUrl;
                 }
+
+
                 foreach (string s in _UrlSplit)
                 {
                     _SplitFirst = s;
