@@ -58,6 +58,7 @@ namespace Server
                             
                             .line {
                                 padding:10px;
+                                width:100%;
                             }
 
                             .min20 {
@@ -67,8 +68,10 @@ namespace Server
                             }
 
                             .group {
-                                background-color:red;
                                 visibility:hidden;
+                                width:100%;
+                                position:absolute;
+                                padding-left:20%;
                             }
 
 
@@ -80,7 +83,7 @@ namespace Server
 
                         <script language='javascript' type='text/javascript'>
 
-                            var groups = 0;
+                            var groups = 1;
 
                             function countGroups()
                             {
@@ -88,11 +91,30 @@ namespace Server
 
                                 //alert(groups);
 
-for (var i = 0; i <= groups; i++)
+                                for (var i = 1; i <= groups; i++)
+                                {
+                                    $('#navigation').append('<a href=""#"" id=""' + i + '"" onClick=""javascript:blub(this.id)"">' + ' ' + i + ' ' + '</a>');
+                                }
+
+                                
+for (var i = 1; i <= groups; i++)
 {
-    $('#navigation').append(i + ' ');
+                                $( '#grouplink' + i ).click(function() {
+
+                                    $( '#group' + i ).css( 'visibility', 'visible' );
+                                });
 }
-                            }
+                            }      
+
+function blub(id)
+{
+    for (var i = 1; i <= groups; i++)
+    {
+        $( '#group' + i ).css( 'visibility', 'hidden' );
+    }
+
+    $( '#group' + id ).css( 'visibility', 'visible' );
+}                     
 
                         </script>
 

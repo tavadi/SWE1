@@ -121,8 +121,8 @@ namespace Server
 
         private void createResponse()
         {
-            int counter = 0;
-            int groupcounter = 0;
+            int counter = 1;
+            int groupcounter = 1;
 
             int a = 0;
             for (int i = 0; i < _Parameter.Count; i++)
@@ -168,7 +168,7 @@ namespace Server
                         {
 
                             // Ausgabe wird für die Blätterfunktion gruppiert (30 Elemente --> 1 Gruppe) 
-                            if (counter == 0)
+                            if (counter == 1)
                             {
                                 _Response.Add("<div id='group" + groupcounter + "' class='group'>");
                                 groupcounter++;
@@ -181,7 +181,7 @@ namespace Server
                             if (counter == 30)
                             {
                                 _Response.Add("</div>");
-                                counter =0;
+                                counter = 1;
                             }
                         }
                     } 
