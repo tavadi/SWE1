@@ -37,12 +37,12 @@ namespace Server
 
         public void SplitURLFirst(string Method)
         {
-            _UrlSplit = _Url.Split('?', '/');
+            _UrlSplit = _Url.Split( new char [] {'?', '/'}, 3);
 
             // Pluginname steht immer an der 1ten Stelle
             _PluginName = _UrlSplit[1];
  
-            if (Method == "GET")
+             if (Method == "GET")
             {
                 // Je nachdem wieviele Werte übergeben wurden, müssen die Parameter angepasst werden.
                 // [1] = PluginName
@@ -81,7 +81,7 @@ namespace Server
 
         public void SplitURLSecond()
         {
-            _UrlSplit = _SplitFirst.Split('&', '=');
+            _UrlSplit = _SplitFirst.Split('&', '=', '/');
         }
 
 

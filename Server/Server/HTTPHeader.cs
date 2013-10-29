@@ -21,19 +21,28 @@ namespace Server
 
         public void sendMessage()
         {
-            _sw.WriteLine("HTTP/1.1 200 OK");
-            _sw.WriteLine("Server: Apache/1.3.29 (Unix) PHP/4.3.4");
-            _sw.WriteLine("Content-Length: " + _msg.Length);
-            _sw.WriteLine("Content-Language: de");
-            _sw.WriteLine("Connection: close");
-            _sw.WriteLine("Content-Type: text/html");
-            _sw.WriteLine();
+            try
+            {
+                _sw.WriteLine("HTTP/1.1 200 OK");
+                _sw.WriteLine("Server: Apache/1.3.29 (Unix) PHP/4.3.4");
+                _sw.WriteLine("Content-Length: " + _msg.Length);
+                _sw.WriteLine("Content-Language: de");
+                _sw.WriteLine("Connection: close");
+                _sw.WriteLine("Content-Type: text/html");
+                _sw.WriteLine();
 
 
-            //_sw.WriteLine(HttpUtility.UrlEncode(_msg));
-            _sw.WriteLine(_msg);
+                //_sw.WriteLine(HttpUtility.UrlEncode(_msg));
+                _sw.WriteLine(_msg);
 
-            _sw.Flush();
+                _sw.Flush();
+            }
+            catch (IOException e)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Fehler im Header");
+                Console.ForegroundColor = ConsoleColor.Green;
+            }
         }
     }
 }

@@ -38,8 +38,8 @@ namespace Server
                 string filename = Path.GetFileNameWithoutExtension(Plugin);
                 //Console.WriteLine(result);
 
-                // Server.CGetTemperatur
-                // Server.CStatic
+                // Server.GetTemperatur
+                // Server.Static
                 Type type = myDllAssembly.GetType("Server." + filename);
 
                 // Create Instance 

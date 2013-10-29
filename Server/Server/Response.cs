@@ -91,30 +91,36 @@ namespace Server
 
                                 //alert(groups);
 
+
+                                // Ersten Ergebnisse sichtbar machen
+                                $( '#group' + 1 ).css( 'visibility', 'visible' );
+
+
                                 for (var i = 1; i <= groups; i++)
                                 {
-                                    $('#navigation').append('<a href=""#"" id=""' + i + '"" onClick=""javascript:blub(this.id)"">' + ' ' + i + ' ' + '</a>');
+                                    $('#navigation').append('<a href=""#"" id=""' + i + '"" onClick=""javascript:show_data(this.id)"">' + ' ' + i + ' ' + '</a>');
                                 }
 
-                                
-for (var i = 1; i <= groups; i++)
-{
-                                $( '#grouplink' + i ).click(function() {
+                                /*
+                                for (var i = 1; i <= groups; i++)
+                                {
+                                    $( '#grouplink' + i ).click(function() {
 
-                                    $( '#group' + i ).css( 'visibility', 'visible' );
-                                });
-}
+                                        $( '#group' + i ).css( 'visibility', 'visible' );
+                                    });
+                                }
+                                */
                             }      
 
-function blub(id)
-{
-    for (var i = 1; i <= groups; i++)
-    {
-        $( '#group' + i ).css( 'visibility', 'hidden' );
-    }
+                            function show_data(id)
+                            {
+                                for (var i = 1; i <= groups; i++)
+                                {
+                                    $( '#group' + i ).css( 'visibility', 'hidden' );
+                                }
 
-    $( '#group' + id ).css( 'visibility', 'visible' );
-}                     
+                                $( '#group' + id ).css( 'visibility', 'visible' );
+                            }                     
 
                         </script>
 

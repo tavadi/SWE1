@@ -7,6 +7,7 @@ using System.Threading;
 using System.Timers;
 using System.Data.SqlClient;
 using System.Data.OleDb;
+using System.IO;
 using Server;
 
 namespace Server
@@ -22,6 +23,7 @@ namespace Server
         private string _Year;
         private string _Month;
         private string _Day;
+        private string _Max;
 
         public string PluginName
         {
@@ -55,12 +57,14 @@ namespace Server
             }
 
             get
-            {            
-                _Response = new List<string>();
+            {
+               _Response = new List<string>();
 
+                // Es wurden keine Parameter übergeben
                 if (_Parameter.Count < 2)
                 {
 
+                    // Es sollen Daten aus dem Sensor ausgelesen und in die Datenbank gespeichert werden
                     if (_Parameter[0] == "Sensor")
                     {
                         // Ließt ständig Daten aus
@@ -72,11 +76,13 @@ namespace Server
                         _Response.Add("</h1>");
                     }
 
+                    // Anzeigen der Form
                     else if (_Parameter[0] == "Messwerte")
                     {
                         displayForm();
                     }
 
+                    // Anzeigen aller Möglichkeiten
                     else if (_Parameter[0] == _PluginName)
                     {
                         _Response.Add(@"
@@ -87,10 +93,10 @@ namespace Server
                     }
 
                 }
-
-
                 else
                 {
+                    // Parameter wurden übergeben
+                    // Response erstellen
                     displayForm();
                     createResponse();
                 }
@@ -113,6 +119,9 @@ namespace Server
                     <label>Day</label>
                     <input type=""text"" name=""day"" value=""25"" />
                     </br>
+                    <label>Maximal</label>
+                    <input type=""text"" name=""max"" value="""" />
+                    </br>
                     <input type=""submit"" value=""Submit"" />
                 </form>
             ");
@@ -125,20 +134,41 @@ namespace Server
             int groupcounter = 1;
 
             int a = 0;
-            for (int i = 0; i < _Parameter.Count; i++)
+
+            // REST-Abfrage --> XML
+            if (_Parameter.Count == 3)
             {
-                a = i;
-                if (_Parameter[i] == "year")
+                _Year = _Parameter[0];
+                _Month = _Parameter[1];
+                _Day = _Parameter[2];
+
+                // XML-File erstellen
+                createXML();
+                
+            }
+
+            // Abfrage über Form
+            else if (_Parameter.Count == 8)
+            {
+                for (int i = 0; i < _Parameter.Count; i++)
                 {
-                    _Year =  _Parameter[a + 1];
-                }
-                else if (_Parameter[i] == "month")
-                {
-                    _Month = _Parameter[a + 1];
-                }
-                else if (_Parameter[i] == "day")
-                {
-                    _Day = _Parameter[a + 1];
+                    a = i;
+                    if (_Parameter[i] == "year")
+                    {
+                        _Year = _Parameter[a + 1];
+                    }
+                    else if (_Parameter[i] == "month")
+                    {
+                        _Month = _Parameter[a + 1];
+                    }
+                    else if (_Parameter[i] == "day")
+                    {
+                        _Day = _Parameter[a + 1];
+                    }
+                    else if (_Parameter[i] == "max")
+                    {
+                        _Max = _Parameter[a + 1];
+                    }
                 }
             }
 
@@ -235,5 +265,50 @@ namespace Server
             }
         }
 
+
+        private void createXML()
+        {
+            string date = DateTime.Now.ToString("yyyy_MM_dd_HH_mm_ss_ffff");
+            string file = Directory.GetCurrentDirectory() + "/XML/TemperatureXML_" + date + ".xml";
+
+            if (File.Exists(file))
+            {
+                File.Delete(file);
+            }
+            
+            // Create a file to write to.
+            using (StreamWriter sw = new StreamWriter(file))
+            {
+                sw.WriteLine("<?xml version='1.0' encoding='UTF-8' standalone='yes'?>");
+                sw.WriteLine("<PluginTemperatur>");
+                sw.WriteLine("<title>Plugin Temperatur</title>");
+
+
+                using (SqlConnection db = new SqlConnection(
+                    @"Data Source=.\SqlExpress;
+                    Initial Catalog=SWE_Temperatur;
+	                Integrated Security=true;"))
+                {
+                    db.Open();
+                    SqlCommand cmd = new SqlCommand(@"SELECT [DATE], [TEMPERATUR] 
+                                                FROM [MESSDATEN] 
+                                                WHERE YEAR([DATE]) = '" + _Year + "' AND MONTH([DATE]) = '" + _Month + "' AND DAY([DATE]) = '" + _Day + "'", db);
+
+                    using (SqlDataReader rd = cmd.ExecuteReader())
+                    {
+                        while (rd.Read())
+                        {
+                            sw.WriteLine("<element>");
+                            sw.WriteLine("<Date>" + _Year + "." + _Month + "." + _Day + "</Date>");
+                            sw.WriteLine("<Temperature>" + rd.GetDecimal(1).ToString() + "</Temperature>");
+                            sw.WriteLine("</element>");
+
+                        }
+                    }
+                }
+
+                sw.WriteLine("</PluginTemperatur>");
+            }
+        }
     }
 }
