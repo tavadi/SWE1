@@ -16,14 +16,28 @@ namespace Server
         private IList<string> _Parameter;
         private IList<string> _Response;
 
+
+
+        // ##########################################################################################################################################
         // Konstruktor
+        public PluginManager(string PluginName)
+        {
+            _Name = PluginName;
+            checkPlugin();
+        }
+
+        // ##########################################################################################################################################
         public PluginManager(string PluginName, IList<string> URL)
         {
             _Name = PluginName;
             _Parameter = URL;
             checkPlugin();
         }
-        
+
+
+
+
+        // ##########################################################################################################################################
         public void checkPlugin()
         {
             // Navigate to Path (DLL-Files from Plugins)
@@ -64,21 +78,25 @@ namespace Server
                 {
                     isPlugin.SetValue(StaticInstance, true, null);
                     doSomething.SetValue(StaticInstance, _Parameter, null);
-
+                    
                     _Response = (IList<string>)doSomething.GetValue(StaticInstance, null);
                 }
 
                 
 
                 // Write true or false
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine((bool)isPlugin.GetValue(StaticInstance, null));
-                Console.ForegroundColor = ConsoleColor.Green;
+                //Console.ForegroundColor = ConsoleColor.Yellow;
+                //Console.WriteLine((bool)isPlugin.GetValue(StaticInstance, null));
+                //Console.ForegroundColor = ConsoleColor.Green;
 
                 
             }
         }
 
+
+
+
+        // ##########################################################################################################################################
         public IList<string> Response
         {
             get

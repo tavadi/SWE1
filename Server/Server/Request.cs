@@ -14,8 +14,11 @@ namespace Server
         private IList<string> _Parameter;
         private string _PluginName;
         private List<string> _Header;
-        
 
+
+
+
+        // ##########################################################################################################################################
         public Request(StreamReader sr)
         {
             // HTTP-Header Informationen
@@ -94,6 +97,9 @@ namespace Server
 
 
 
+
+
+        // ##########################################################################################################################################
         public string Name
         {
             get
@@ -103,6 +109,10 @@ namespace Server
         }
 
 
+
+
+
+        // ##########################################################################################################################################
         // Return Parameter
         public IList<string> URL
         {

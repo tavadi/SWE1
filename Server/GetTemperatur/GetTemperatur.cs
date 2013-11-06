@@ -20,20 +20,26 @@ namespace Server
         private IList<string> _Parameter;
         private IList<string> _Response;
 
+
         private string _Year;
         private string _Month;
         private string _Day;
         private string _Max;
 
+
+
+        // ##########################################################################################################################################
         public string PluginName
         {
             get
             {
-                Console.WriteLine("ICH BIN DAS PLUGIN: " + _PluginName);
+                //Console.WriteLine("ICH BIN DAS PLUGIN: " + _PluginName);
                 return _PluginName;
             }
         }
 
+
+        // ##########################################################################################################################################
         public bool isPlugin
         {
             set
@@ -49,6 +55,7 @@ namespace Server
 
 
 
+        // ##########################################################################################################################################
         public IList<string> doSomething
         {
             set
@@ -58,54 +65,61 @@ namespace Server
 
             get
             {
-               _Response = new List<string>();
-
-                // Es wurden keine Parameter übergeben
-                if (_Parameter.Count < 2)
-                {
-
-                    // Es sollen Daten aus dem Sensor ausgelesen und in die Datenbank gespeichert werden
-                    if (_Parameter[0] == "Sensor")
-                    {
-                        // Ließt ständig Daten aus
-                        Thread thread = new Thread(insertData);
-                        thread.Start();
-
-                        _Response.Add("<h1>");
-                        _Response.Add("Es werden Daten aus dem Sensor ausgelesen und in die Datenbank gespeichert.");
-                        _Response.Add("</h1>");
-                    }
-
-                    // Anzeigen der Form
-                    else if (_Parameter[0] == "Messwerte")
-                    {
-                        displayForm();
-                    }
-
-                    // Anzeigen aller Möglichkeiten
-                    else if (_Parameter[0] == _PluginName)
-                    {
-                        _Response.Add(@"
-                            <button><a href=""GetTemperatur.html?Sensor"">Messwerte aus Sensor auslesen</a></button>
-                            <br />
-                            <button><a href=""GetTemperatur.html?Messwerte"">Messwerte filtern</a></button>
-                        ");
-                    }
-
-                }
-                else
-                {
-                    // Parameter wurden übergeben
-                    // Response erstellen
-                    displayForm();
-                    createResponse();
-                }
+                showMenu();
 
                 return _Response;
             }
         }
 
 
+
+
+        // ##########################################################################################################################################
+        private void showMenu()
+        {
+            _Response = new List<string>();
+
+            // Es wird in einem Thread ständig ein "Sensor" ausgelesen und in die Datenbank gespeichert
+            if (_Parameter == null)
+            {
+                //Console.WriteLine("Es werden Sensordaten in die Datenbank gespeicher");
+                Thread thread = new Thread(insertData);
+                thread.Start();
+            }
+
+            // Es wurden keine Parameter übergeben
+            else if (_Parameter.Count < 2)
+            {
+                // Anzeigen der Form
+                if (_Parameter[0] == "Messwerte")
+                {
+                    displayForm();
+                }
+
+                // Anzeigen aller Möglichkeiten
+                else if (_Parameter[0] == _PluginName)
+                {
+                    _Response.Add(@"
+                            <button><a href=""GetTemperatur.html?Sensor"">Messwerte aus Sensor auslesen</a></button>
+                            <br />
+                            <button><a href=""GetTemperatur.html?Messwerte"">Messwerte filtern</a></button>
+                        ");
+                }
+
+            }
+            else
+            {
+                // Parameter wurden übergeben
+                // Response erstellen
+                displayForm();
+                createResponse();
+            }
+        }
+
+
+
+
+        // ##########################################################################################################################################
         private void displayForm()
         {
             _Response.Add(@"
@@ -119,15 +133,16 @@ namespace Server
                     <label>Day</label>
                     <input type=""text"" name=""day"" value=""25"" />
                     </br>
-                    <label>Maximal</label>
-                    <input type=""text"" name=""max"" value="""" />
-                    </br>
                     <input type=""submit"" value=""Submit"" />
                 </form>
             ");
         }
 
 
+
+
+
+        // ##########################################################################################################################################
         private void createResponse()
         {
             int counter = 1;
@@ -144,7 +159,7 @@ namespace Server
 
                 // XML-File erstellen
                 createXML();
-                
+                return;
             }
 
             // Abfrage über Form
@@ -164,10 +179,6 @@ namespace Server
                     else if (_Parameter[i] == "day")
                     {
                         _Day = _Parameter[a + 1];
-                    }
-                    else if (_Parameter[i] == "max")
-                    {
-                        _Max = _Parameter[a + 1];
                     }
                 }
             }
@@ -222,6 +233,9 @@ namespace Server
 
 
 
+
+
+        // ##########################################################################################################################################
         private void insertData()
         {
             /*
@@ -234,11 +248,15 @@ namespace Server
 
             System.Timers.Timer timer = new System.Timers.Timer();
             timer.Elapsed += new ElapsedEventHandler(Insert);
-            timer.Interval = 1000;
+            timer.Interval = 10000;
             timer.Enabled = true;
 
         }
 
+
+
+
+        // ##########################################################################################################################################
         private void Insert(object source, ElapsedEventArgs e)
         {
             Random rnd = new Random();
@@ -266,49 +284,57 @@ namespace Server
         }
 
 
+
+
+
+        // ##########################################################################################################################################
         private void createXML()
         {
             string date = DateTime.Now.ToString("yyyy_MM_dd_HH_mm_ss_ffff");
             string file = Directory.GetCurrentDirectory() + "/XML/TemperatureXML_" + date + ".xml";
 
-            if (File.Exists(file))
-            {
-                File.Delete(file);
-            }
-            
+            string blub;
+
             // Create a file to write to.
-            using (StreamWriter sw = new StreamWriter(file))
+            blub = @"    
+<plaintext>
+    <?xml version='1.0' encoding='UTF-8' standalone='yes'?>
+        <PluginTemperatur>
+            <title>Plugin Temperatur</title>
+";
+
+
+            using (SqlConnection db = new SqlConnection(
+                @"Data Source=.\SqlExpress;
+                Initial Catalog=SWE_Temperatur;
+	            Integrated Security=true;"))
             {
-                sw.WriteLine("<?xml version='1.0' encoding='UTF-8' standalone='yes'?>");
-                sw.WriteLine("<PluginTemperatur>");
-                sw.WriteLine("<title>Plugin Temperatur</title>");
+                db.Open();
+                SqlCommand cmd = new SqlCommand(@"SELECT [DATE], [TEMPERATUR] 
+                                            FROM [MESSDATEN] 
+                                            WHERE YEAR([DATE]) = '" + _Year + "' AND MONTH([DATE]) = '" + _Month + "' AND DAY([DATE]) = '" + _Day + "'", db);
 
-
-                using (SqlConnection db = new SqlConnection(
-                    @"Data Source=.\SqlExpress;
-                    Initial Catalog=SWE_Temperatur;
-	                Integrated Security=true;"))
+                using (SqlDataReader rd = cmd.ExecuteReader())
                 {
-                    db.Open();
-                    SqlCommand cmd = new SqlCommand(@"SELECT [DATE], [TEMPERATUR] 
-                                                FROM [MESSDATEN] 
-                                                WHERE YEAR([DATE]) = '" + _Year + "' AND MONTH([DATE]) = '" + _Month + "' AND DAY([DATE]) = '" + _Day + "'", db);
-
-                    using (SqlDataReader rd = cmd.ExecuteReader())
+                    while (rd.Read())
                     {
-                        while (rd.Read())
-                        {
-                            sw.WriteLine("<element>");
-                            sw.WriteLine("<Date>" + _Year + "." + _Month + "." + _Day + "</Date>");
-                            sw.WriteLine("<Temperature>" + rd.GetDecimal(1).ToString() + "</Temperature>");
-                            sw.WriteLine("</element>");
+                        blub = blub + @"
+            <element>
+                <Date>" + _Year + "." + _Month + "." + _Day + @"</Date>
+                <Temperature>" + rd.GetDecimal(1).ToString() + @"</Temperature>
+            </element>"
+;
 
-                        }
                     }
                 }
-
-                sw.WriteLine("</PluginTemperatur>");
             }
+
+            blub = blub + @"         
+        </PluginTemperatur>
+</plaintext>
+    ";
+
+            _Response.Add(blub);
         }
     }
 }
