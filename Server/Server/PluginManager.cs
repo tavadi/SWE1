@@ -13,8 +13,11 @@ namespace Server
     {
         
         private string _Name;
+        private string _ContentType;
         private IList<string> _Parameter;
-        private IList<string> _Response;
+        private string _Response;
+
+        private StreamWriter _sw;
 
 
 
@@ -27,10 +30,12 @@ namespace Server
         }
 
         // ##########################################################################################################################################
-        public PluginManager(string PluginName, IList<string> URL)
+        public PluginManager(string PluginName, IList<string> URL, StreamWriter sw)
         {
             _Name = PluginName;
             _Parameter = URL;
+
+            _sw = sw;
             checkPlugin();
         }
 
@@ -59,15 +64,13 @@ namespace Server
                 // Create Instance 
                 object StaticInstance = Activator.CreateInstance(type);
 
-
                 // Functions in each Plugin --> Interface
                 PropertyInfo PluginName = type.GetProperty("PluginName");
                 PropertyInfo isPlugin = type.GetProperty("isPlugin");
                 PropertyInfo doSomething = type.GetProperty("doSomething");
-
+                PropertyInfo ContentType = type.GetProperty("ContentType");
+                PropertyInfo Writer = type.GetProperty("Writer");
                 
-                //object blub = StaticInstance.GetType().GetProperties();
-
                 
                 // Call function PluginName and return value
                 string value = (string)PluginName.GetValue(StaticInstance, null);
@@ -77,33 +80,17 @@ namespace Server
                 if (filename == _Name)
                 {
                     isPlugin.SetValue(StaticInstance, true, null);
+                    Writer.SetValue(StaticInstance, _sw, null);
                     doSomething.SetValue(StaticInstance, _Parameter, null);
-                    
-                    _Response = (IList<string>)doSomething.GetValue(StaticInstance, null);
                 }
 
-                
 
                 // Write true or false
                 //Console.ForegroundColor = ConsoleColor.Yellow;
                 //Console.WriteLine((bool)isPlugin.GetValue(StaticInstance, null));
                 //Console.ForegroundColor = ConsoleColor.Green;
 
-                
             }
-        }
-
-
-
-
-        // ##########################################################################################################################################
-        public IList<string> Response
-        {
-            get
-            {
-                return _Response;
-            }
-        }
-        
+        }  
     }
 }

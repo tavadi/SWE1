@@ -18,13 +18,26 @@ namespace Server
         private string _PluginName = "GetTemperatur.html";
         private bool _isPlugin = false;
         private IList<string> _Parameter;
-        private IList<string> _Response;
+        private string _Response;
 
+        private string _ContentType = "text/html";
 
         private string _Year;
         private string _Month;
         private string _Day;
-        private string _Max;
+
+        private StreamWriter _sw;
+        private Response Resp = new Response();
+
+
+        // ##########################################################################################################################################
+        public StreamWriter Writer
+        {
+            set
+            {
+                _sw = value;
+            }
+        }
 
 
 
@@ -33,7 +46,7 @@ namespace Server
         {
             get
             {
-                //Console.WriteLine("ICH BIN DAS PLUGIN: " + _PluginName);
+                Console.WriteLine("ICH BIN DAS PLUGIN: " + _PluginName);
                 return _PluginName;
             }
         }
@@ -61,13 +74,19 @@ namespace Server
             set
             {
                 _Parameter = value;
+                showMenu();
             }
 
+        }
+
+
+
+        // ##########################################################################################################################################
+        public string ContentType
+        {
             get
             {
-                showMenu();
-
-                return _Response;
+                return _ContentType;
             }
         }
 
@@ -77,7 +96,7 @@ namespace Server
         // ##########################################################################################################################################
         private void showMenu()
         {
-            _Response = new List<string>();
+            //_Response = new List<string>();
 
             // Es wird in einem Thread ständig ein "Sensor" ausgelesen und in die Datenbank gespeichert
             if (_Parameter == null)
@@ -99,11 +118,13 @@ namespace Server
                 // Anzeigen aller Möglichkeiten
                 else if (_Parameter[0] == _PluginName)
                 {
-                    _Response.Add(@"
+                    _Response += @"
                             <button><a href=""GetTemperatur.html?Sensor"">Messwerte aus Sensor auslesen</a></button>
                             <br />
                             <button><a href=""GetTemperatur.html?Messwerte"">Messwerte filtern</a></button>
-                        ");
+                        ";
+
+                    Resp.sendMessage(_sw, _Response, _ContentType);
                 }
 
             }
@@ -111,9 +132,10 @@ namespace Server
             {
                 // Parameter wurden übergeben
                 // Response erstellen
-                displayForm();
+                //displayForm();
                 createResponse();
             }
+
         }
 
 
@@ -122,7 +144,7 @@ namespace Server
         // ##########################################################################################################################################
         private void displayForm()
         {
-            _Response.Add(@"
+            _Response += @"
                 <form method=""POST"" action=""GetTemperatur.html"">
                     <label>Year</label>
                     <input type=""text"" name=""year"" value=""2013"" />
@@ -135,7 +157,10 @@ namespace Server
                     </br>
                     <input type=""submit"" value=""Submit"" />
                 </form>
-            ");
+            ";
+
+            Resp.sendMessage(_sw, _Response, _ContentType);
+
         }
 
 
@@ -158,12 +183,12 @@ namespace Server
                 _Day = _Parameter[2];
 
                 // XML-File erstellen
+                _ContentType = "text/xml";
                 createXML();
-                return;
             }
 
             // Abfrage über Form
-            else if (_Parameter.Count == 8)
+            else if (_Parameter.Count == 6)
             {
                 for (int i = 0; i < _Parameter.Count; i++)
                 {
@@ -181,55 +206,81 @@ namespace Server
                         _Day = _Parameter[a + 1];
                     }
                 }
-            }
 
 
-            using (SqlConnection db = new SqlConnection(
-                @"Data Source=.\SqlExpress;
+
+                using (SqlConnection db = new SqlConnection(
+                    @"Data Source=.\SqlExpress;
                 Initial Catalog=SWE_Temperatur;
 	            Integrated Security=true;"))
-            {
-                db.Open();
-
-
-                SqlCommand cmd = new SqlCommand("SELECT [DATE], [TEMPERATUR] FROM [MESSDATEN]", db);
-
-                using (SqlDataReader rd = cmd.ExecuteReader())
                 {
-                    _Response.Add("<div id='container'>");
-                    while (rd.Read())
+                    db.Open();
+
+
+                    SqlCommand cmd = new SqlCommand("SELECT [DATE], [TEMPERATUR] FROM [MESSDATEN]", db);
+
+                    using (SqlDataReader rd = cmd.ExecuteReader())
                     {
-                        //Console.Write(rd.GetDateTime(0).Date.Year + " - ");
-                        //Console.Write(rd.GetDateTime(0).Date.Month + " - ");
-                        //Console.WriteLine(rd.GetDateTime(0).Date.Day);
-
-                        if ((rd.GetDateTime(0).Date.Year.ToString() == _Year) &&
-                            (rd.GetDateTime(0).Date.Month.ToString() == _Month) &&
-                            (rd.GetDateTime(0).Date.Day.ToString() == _Day))
+                        _Response += "<div id='container'>";
+                        while (rd.Read())
                         {
+                            //Console.Write(rd.GetDateTime(0).Date.Year + " - ");
+                            //Console.Write(rd.GetDateTime(0).Date.Month + " - ");
+                            //Console.WriteLine(rd.GetDateTime(0).Date.Day);
 
-                            // Ausgabe wird für die Blätterfunktion gruppiert (30 Elemente --> 1 Gruppe) 
-                            if (counter == 1)
+                            if ((rd.GetDateTime(0).Date.Year.ToString() == _Year) &&
+                                (rd.GetDateTime(0).Date.Month.ToString() == _Month) &&
+                                (rd.GetDateTime(0).Date.Day.ToString() == _Day))
                             {
-                                _Response.Add("<div id='group" + groupcounter + "' class='group'>");
-                                groupcounter++;
-                            }
-                            counter++;
 
-                            // Inhalt aus der DB
-                            _Response.Add("<div class='line'><div class='min20'>" + rd.GetDateTime(0).ToString() + "</div><div class='min20'>" + rd.GetDecimal(1).ToString() + "</div></div>");
-                            
-                            if (counter == 30)
-                            {
-                                _Response.Add("</div>");
-                                counter = 1;
+                                // Ausgabe wird für die Blätterfunktion gruppiert (30 Elemente --> 1 Gruppe) 
+                                if (counter == 1)
+                                {
+                                    _Response += "<div id='group" + groupcounter + "' class='group'>";
+                                    groupcounter++;
+                                }
+                                counter++;
+
+                                // Inhalt aus der DB
+                                _Response += "<div class='line'><div class='min20'>" + rd.GetDateTime(0).ToString() + "</div><div class='min20'>" + rd.GetDecimal(1).ToString() + "</div></div>";
+
+                                if (counter == 30)
+                                {
+                                    _Response += "</div>";
+                                    counter = 1;
+                                }
                             }
                         }
-                    } 
-                    _Response.Add("</div>");
+                        _Response += "</div>";
+                    }
                 }
-             }
+            }
+
+            Resp.sendMessage(_sw, _Response, _ContentType);
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -293,12 +344,10 @@ namespace Server
             string date = DateTime.Now.ToString("yyyy_MM_dd_HH_mm_ss_ffff");
             string file = Directory.GetCurrentDirectory() + "/XML/TemperatureXML_" + date + ".xml";
 
-            string blub;
+            string xml;
 
             // Create a file to write to.
-            blub = @"    
-<plaintext>
-    <?xml version='1.0' encoding='UTF-8' standalone='yes'?>
+            xml = @"<?xml version='1.0' encoding='UTF-8' standalone='yes'?>
         <PluginTemperatur>
             <title>Plugin Temperatur</title>
 ";
@@ -318,7 +367,7 @@ namespace Server
                 {
                     while (rd.Read())
                     {
-                        blub = blub + @"
+                        xml = xml + @"
             <element>
                 <Date>" + _Year + "." + _Month + "." + _Day + @"</Date>
                 <Temperature>" + rd.GetDecimal(1).ToString() + @"</Temperature>
@@ -329,12 +378,11 @@ namespace Server
                 }
             }
 
-            blub = blub + @"         
+            xml = xml + @"         
         </PluginTemperatur>
-</plaintext>
     ";
 
-            _Response.Add(blub);
+            _Response += xml;
         }
     }
 }

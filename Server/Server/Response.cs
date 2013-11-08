@@ -12,40 +12,79 @@ namespace Server
     {
         private LogFile LogFile;
 
-        private string _message;
+        private string _Response;
+        private string _ContentType;
+
+        private string _HTMLHeader;
+        private string _HTMLFooter;
+
+        private int _size;
+
+        private StreamWriter _sw;
 
         
         // ##########################################################################################################################################
-        public IList<string> Message
+        public void sendMessage(StreamWriter sw, string Response, string ContentType)
         {
-            set
-            {
-                try
-                {
-                    foreach (string i in value)
-                    {
-                        _message = _message + i + "<br />";
-                    }
-                }
-                catch (NullReferenceException e)
-                {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("Es wurden keine Werte übergeben");
-                    Console.ForegroundColor = ConsoleColor.Green;
+            _sw = sw;
+            _Response = Response;
+            _ContentType = ContentType;
 
-                    LogFile = new LogFile(e.ToString());
-                }
+            // Wenn XML --> nur die reinen XML-Daten zurückschicken
+            if (_ContentType == "text/html")
+            {
+                HTMLHeader();
+                HTMLFooter();
+
+                _size = _HTMLHeader.Length + _HTMLFooter.Length + _Response.Length;
+
+                // Response abschicken
+                SendHTTPHeader();
+                SendHTMLHeader();
+                _sw.WriteLine(_Response);
+                SendHTMLFooter();
             }
+
+            // Wenn es "text/html" ist, die Nachrichten in die HTML-Seite einbetten
+            else if (_ContentType == "text/xml")
+            {
+                _size = _Response.Length;
+
+                SendHTTPHeader();
+                _sw.WriteLine(_Response);
+            }
+
+
+
+
+            // Inhalt löschen
+            Response = "";
+
+
+
+            _sw.Flush();
         }
 
 
-        
-        // ##########################################################################################################################################
-        public void sendMessage(StreamWriter sw)
-        {
 
-            string msg =
-                @"
+        // ##########################################################################################################################################
+        public void sendMessage(StreamWriter sw, byte[] Message, string ContentType)
+        {
+            _sw = sw;
+            _size = Message.Length;
+            _ContentType = ContentType;
+
+            SendHTTPHeader();
+            _sw.BaseStream.Write(Message, 0, Message.Length);
+            _sw.Flush();
+        }
+
+
+        // ##########################################################################################################################################
+        private void HTMLHeader()
+        {
+            _HTMLHeader =
+                    @"
                 <html>
                     <head> 
                         <title>SensorCloud</title> 
@@ -76,9 +115,8 @@ namespace Server
                                 padding-left:20%;
                             }
 
-
-
                         </style>
+
 
 
 
@@ -133,19 +171,59 @@ namespace Server
                         </script>
 
                         <div id='navigation'></div>
-
-                        "
-                        + _message +
-                        @"
-                    </body> 
-                </html>";
-
-            HTTPHeader Header = new HTTPHeader(sw, msg);
-            Header.sendMessage();
-
-            // Inhalt löschen
-            _message = "";
+            ";
         }
 
+
+
+        // ##########################################################################################################################################
+        private void HTMLFooter()
+        {
+            _HTMLFooter += @"
+                    </body> 
+                </html>";
+        }
+
+
+
+
+
+
+
+
+        // ##########################################################################################################################################
+        private void SendHTTPHeader()
+        {
+            /*
+            // HTTP-Header mit entsprechender Nachricht abschicken
+            HTTPHeader Header = new HTTPHeader(_sw, _Response, _ContentType, _size);
+            Header.sendMessage();
+             * */
+
+
+            _sw.WriteLine("HTTP/1.1 200 OK");
+            _sw.WriteLine("Server: Apache/1.3.29 (Unix) PHP/4.3.4");
+            _sw.WriteLine("Content-Length: " + _size);
+            _sw.WriteLine("Content-Language: de");
+            _sw.WriteLine("Connection: close");
+            _sw.WriteLine("Content-Type: " + _ContentType);
+            _sw.WriteLine();
+
+
+        }
+
+
+        // ##########################################################################################################################################
+        private void SendHTMLHeader()
+        {
+            _sw.WriteLine(_HTMLHeader);
+        }
+
+
+        // ##########################################################################################################################################
+        private void SendHTMLFooter()
+        {
+            _sw.WriteLine(_HTMLFooter);
+        }
     }
 }

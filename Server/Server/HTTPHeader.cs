@@ -12,15 +12,19 @@ namespace Server
     {
         private StreamWriter _sw;
         private string _msg;
+        private string _ContentType;
+        private int _size;
 
 
 
 
         // ##########################################################################################################################################
-        public HTTPHeader(StreamWriter sw, string msg)
+        public HTTPHeader(StreamWriter sw, string msg, string ContentType, int size)
         {
             _sw = sw;
             _msg = msg;
+            _ContentType = ContentType;
+            _size = size;
         }
 
 
@@ -33,10 +37,10 @@ namespace Server
             {
                 _sw.WriteLine("HTTP/1.1 200 OK");
                 _sw.WriteLine("Server: Apache/1.3.29 (Unix) PHP/4.3.4");
-                _sw.WriteLine("Content-Length: " + _msg.Length);
+                _sw.WriteLine("Content-Length: " + _size);
                 _sw.WriteLine("Content-Language: de");
                 _sw.WriteLine("Connection: close");
-                _sw.WriteLine("Content-Type: text/html");
+                _sw.WriteLine("Content-Type: " + _ContentType);
                 _sw.WriteLine();
 
 
@@ -48,7 +52,7 @@ namespace Server
             catch (IOException e)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("Fehler im Header");
+                Console.WriteLine("Fehler im Header" + e);
                 Console.ForegroundColor = ConsoleColor.Green;
             }
         }

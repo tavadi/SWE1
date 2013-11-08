@@ -4,16 +4,15 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{FAEDF3C2-F3B7-45BE-A445-AC580299C8E6}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <ProjectGuid>{B49FB6E7-65FF-4823-8D2E-BC3B7FD29BF7}</ProjectGuid>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Server</RootNamespace>
-    <AssemblyName>Server</AssemblyName>
+    <RootNamespace>Static</RootNamespace>
+    <AssemblyName>Static</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -23,7 +22,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -34,7 +32,6 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -42,21 +39,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FirstForm.cs" />
-    <Compile Include="HTMLHeader.cs" />
-    <Compile Include="HTTPHeader.cs" />
-    <Compile Include="LogFile.cs" />
-    <Compile Include="PluginManager.cs" />
-    <Compile Include="Response.cs" />
-    <Compile Include="Request.cs" />
-    <Compile Include="Url.cs" />
-    <Compile Include="IPlugins.cs" />
-    <Compile Include="Program.cs" />
+    <Compile Include="Static.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Server.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <ProjectReference Include="..\Server\Server.csproj">
+      <Project>{faedf3c2-f3b7-45be-a445-ac580299c8e6}</Project>
+      <Name>Server</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

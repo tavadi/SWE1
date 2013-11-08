@@ -27,7 +27,9 @@ namespace Server
                     </body> 
                 </html>";
 
-            HTTPHeader Header = new HTTPHeader(sw, msg);
+            int size = msg.Length;
+
+            HTTPHeader Header = new HTTPHeader(sw, msg, "text/html", size);
             Header.sendMessage();
         }
     }

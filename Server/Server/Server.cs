@@ -88,7 +88,7 @@ namespace Server
             listener.Start();
 
             // Plugin Temperatur: Sensor auslesen
-            PluginManager PluginManager = new PluginManager("GetTemperatur.html");
+            //PluginManager PluginManager = new PluginManager("GetTemperatur.html");
 
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine();
@@ -143,23 +143,15 @@ namespace Server
             if (PluginName.Name != "favicon.ico" && PluginName.Name != null)
             {
                 // start PluginManager
-                PluginManager PluginManager = new PluginManager(PluginName.Name, PluginName.URL);
-
-
-                // Response
-                IList<string> Response = (PluginManager.Response);
-
-                _Response.Message = Response;      // Create Message from Server to Client
-                _Response.sendMessage(sw);         // Send the Message to the Client
+                PluginManager PluginManager = new PluginManager(PluginName.Name, PluginName.URL, sw);
             }
 
             
     
             
-            s.Close();
-            stream.Close();
-            sr.Close();
-            sw.Close();            
+            //s.Close();
+            //stream.Close();
+            //sr.Close();
         }
          
     }
