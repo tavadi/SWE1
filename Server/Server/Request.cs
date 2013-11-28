@@ -8,10 +8,9 @@ using System.Web;
 
 namespace Server
 {
-    class Request
+    public class Request
     {
-        private IList<string> _Url;
-        private IList<string> _Parameter;
+        private string[] _Parameter;
         private string _PluginName;
         private List<string> _Header;
 
@@ -33,27 +32,30 @@ namespace Server
 
 
                 // Split 
-                _Url = line.Split(' ');
+                string[] Url = line.Split(' ');
                 
                 // Method == GET
-                if (line.StartsWith("GET") && (_Url[1] != "/favicon.ico"))
+                if (line.StartsWith("GET") && (Url[1] != "/favicon.ico"))
                 {
+                    //string[] Header;
+                    
                     _Header = new List<string>();
-                    _Header.Add(_Url[0]);
-                    _Header.Add(_Url[1]);
+                    _Header.Add(Url[0]);
+                    _Header.Add(Url[1]);
+                    
                 }
 
                 // Method == POST
                 else if (line.StartsWith("POST"))
                 {
-                    _Header.Add(_Url[0]);
-                    _Header.Add(_Url[1]);
+                    _Header.Add(Url[0]);
+                    _Header.Add(Url[1]);
                 }
 
                 // Content-Length muss für POST gespeichert werden
                 else if (line.StartsWith("Content-Length"))
                 {
-                    _Header.Add(_Url[1]);
+                    _Header.Add(Url[1]);
                 }
 
                 if (string.IsNullOrEmpty(line)) break;
@@ -114,7 +116,7 @@ namespace Server
 
         // ##########################################################################################################################################
         // Return Parameter
-        public IList<string> URL
+        public string[] Parameter
         {
             get
             {

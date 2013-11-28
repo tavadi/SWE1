@@ -12,8 +12,8 @@ namespace Server
     {
         private LogFile LogFile;
 
-        private string _Response;
         private string _ContentType;
+        private string _Filename;
 
         private string _HTMLHeader;
         private string _HTMLFooter;
@@ -24,59 +24,65 @@ namespace Server
 
         
         // ##########################################################################################################################################
-        public void sendMessage(StreamWriter sw, string Response, string ContentType)
+        public void sendMessage(StreamWriter sw, string Response)
         {
             _sw = sw;
-            _Response = Response;
-            _ContentType = ContentType;
 
-            // Wenn XML --> nur die reinen XML-Daten zurückschicken
-            if (_ContentType == "text/html")
+            try
             {
-                HTMLHeader();
-                HTMLFooter();
+                // Wenn XML --> nur die reinen XML-Daten zurückschicken
+                if (_ContentType == "text/html")
+                {
+                    HTMLHeader();
+                    HTMLFooter();
 
-                _size = _HTMLHeader.Length + _HTMLFooter.Length + _Response.Length;
+                    _size = _HTMLHeader.Length + _HTMLFooter.Length + Response.Length;
 
-                // Response abschicken
-                SendHTTPHeader();
-                SendHTMLHeader();
-                _sw.WriteLine(_Response);
-                SendHTMLFooter();
+                    // Response abschicken
+                    SendHTTPHeader();
+                    SendHTMLHeader();
+                    _sw.WriteLine(Response);
+                    SendHTMLFooter();
+                }
+
+                // Wenn es "text/html" ist, die Nachrichten in die HTML-Seite einbetten
+                else if (_ContentType == "text/xml")
+                {
+                    _size = Response.Length;
+
+                    SendHTTPHeader();
+                    _sw.WriteLine(Response);
+                }
             }
-
-            // Wenn es "text/html" ist, die Nachrichten in die HTML-Seite einbetten
-            else if (_ContentType == "text/xml")
+            catch
             {
-                _size = _Response.Length;
+                Response = "Error: Response invalid";
 
+                _size = Response.Length;
                 SendHTTPHeader();
-                _sw.WriteLine(_Response);
+                _sw.WriteLine(Response);
             }
-
-
-
-
-            // Inhalt löschen
-            Response = "";
-
-
 
             _sw.Flush();
+
         }
 
 
 
         // ##########################################################################################################################################
-        public void sendMessage(StreamWriter sw, byte[] Message, string ContentType)
+        public void sendMessage(StreamWriter sw, byte[] Message, string ContentType, string Filename)
         {
             _sw = sw;
             _size = Message.Length;
             _ContentType = ContentType;
+            _Filename = Filename;
+
 
             SendHTTPHeader();
-            _sw.BaseStream.Write(Message, 0, Message.Length);
-            _sw.Flush();
+            sw.Flush();
+            sw.BaseStream.Write(Message, 0, Message.Length);
+            sw.Flush();
+
         }
 
 
@@ -189,27 +195,28 @@ namespace Server
 
 
 
-
+        public string ContentType
+        {
+            set
+            {
+                _ContentType = value;
+            }
+        }
 
         // ##########################################################################################################################################
         private void SendHTTPHeader()
         {
-            /*
-            // HTTP-Header mit entsprechender Nachricht abschicken
-            HTTPHeader Header = new HTTPHeader(_sw, _Response, _ContentType, _size);
-            Header.sendMessage();
-             * */
-
-
             _sw.WriteLine("HTTP/1.1 200 OK");
             _sw.WriteLine("Server: Apache/1.3.29 (Unix) PHP/4.3.4");
+            _sw.WriteLine("Content-Type: " + _ContentType + "; charset=UTF-8");
             _sw.WriteLine("Content-Length: " + _size);
             _sw.WriteLine("Content-Language: de");
-            _sw.WriteLine("Connection: close");
-            _sw.WriteLine("Content-Type: " + _ContentType);
+
+            if (_ContentType == "application/octet-stream")
+                _sw.WriteLine("Content-Disposition: attachment; filename=" + _Filename);
+
+            _sw.WriteLine("Connection: close"); 
             _sw.WriteLine();
-
-
         }
 
 

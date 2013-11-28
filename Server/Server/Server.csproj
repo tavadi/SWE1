@@ -44,7 +44,6 @@
   <ItemGroup>
     <Compile Include="FirstForm.cs" />
     <Compile Include="HTMLHeader.cs" />
-    <Compile Include="HTTPHeader.cs" />
     <Compile Include="LogFile.cs" />
     <Compile Include="PluginManager.cs" />
     <Compile Include="Response.cs" />

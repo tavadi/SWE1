@@ -29,8 +29,9 @@ namespace Server
 
             int size = msg.Length;
 
-            HTTPHeader Header = new HTTPHeader(sw, msg, "text/html", size);
-            Header.sendMessage();
+            Response Response = new Response();
+            Response.ContentType = "text/html";
+            Response.sendMessage(sw, msg);
         }
     }
 }

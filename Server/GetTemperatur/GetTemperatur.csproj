@@ -39,8 +39,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="createXML.cs" />
     <Compile Include="GetTemperatur.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="readSensor.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Server\Server.csproj">

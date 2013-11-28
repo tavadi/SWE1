@@ -9,13 +9,11 @@ using System.Reflection;
 
 namespace Server
 {
-    class PluginManager
+    public class PluginManager
     {
         
         private string _Name;
-        private string _ContentType;
-        private IList<string> _Parameter;
-        private string _Response;
+        private string[] _Parameter;
 
         private StreamWriter _sw;
 
@@ -29,11 +27,22 @@ namespace Server
             checkPlugin();
         }
 
+        
         // ##########################################################################################################################################
-        public PluginManager(string PluginName, IList<string> URL, StreamWriter sw)
+        public PluginManager(string PluginName, string[] Parameter)
         {
             _Name = PluginName;
-            _Parameter = URL;
+            _Parameter = Parameter;
+
+            checkPlugin();
+        }
+
+
+        // ##########################################################################################################################################
+        public PluginManager(string PluginName, string[] Parameter, StreamWriter sw)
+        {
+            _Name = PluginName;
+            _Parameter = Parameter;
 
             _sw = sw;
             checkPlugin();
@@ -67,9 +76,8 @@ namespace Server
                 // Functions in each Plugin --> Interface
                 PropertyInfo PluginName = type.GetProperty("PluginName");
                 PropertyInfo isPlugin = type.GetProperty("isPlugin");
-                PropertyInfo doSomething = type.GetProperty("doSomething");
-                PropertyInfo ContentType = type.GetProperty("ContentType");
                 PropertyInfo Writer = type.GetProperty("Writer");
+                PropertyInfo doSomething = type.GetProperty("doSomething");
                 
                 
                 // Call function PluginName and return value
@@ -81,7 +89,15 @@ namespace Server
                 {
                     isPlugin.SetValue(StaticInstance, true, null);
                     Writer.SetValue(StaticInstance, _sw, null);
-                    doSomething.SetValue(StaticInstance, _Parameter, null);
+
+                    try
+                    {
+                        doSomething.SetValue(StaticInstance, _Parameter, null);
+                    }
+                    catch
+                    {
+                        Console.WriteLine("ERROR: PluginManager - doSomething");
+                    }
                 }
 
 

@@ -88,7 +88,11 @@ namespace Server
             listener.Start();
 
             // Plugin Temperatur: Sensor auslesen
-            //PluginManager PluginManager = new PluginManager("GetTemperatur.html");
+            PluginManager PluginManager = new PluginManager("GetTemperatur.html");
+            
+            // Plugin Navi - Straßenkarte einlesen
+            PluginManager = new PluginManager("Navi.html");
+
 
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine();
@@ -126,11 +130,11 @@ namespace Server
 
 
             // New Request
-            Request PluginName = new Request(sr);
+            Request RequestPlugin = new Request(sr);
 
             
             // Wird nur beim ERSTEN Aufruf eine Form ausgegeben
-            if (PluginName.Name == "")
+            if (RequestPlugin.Name == "")
             {
                 // First Form
                 FirstForm FirstForm = new FirstForm();
@@ -140,10 +144,10 @@ namespace Server
             
 
             // Verhindert doppelte Ausgabe
-            if (PluginName.Name != "favicon.ico" && PluginName.Name != null)
+            if (RequestPlugin.Name != "favicon.ico" && RequestPlugin.Name != null)
             {
                 // start PluginManager
-                PluginManager PluginManager = new PluginManager(PluginName.Name, PluginName.URL, sw);
+                PluginManager PluginManager = new PluginManager(RequestPlugin.Name, RequestPlugin.Parameter, sw);
             }
 
             

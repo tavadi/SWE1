@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
-using System.Timers;
 using System.Data.SqlClient;
 using System.Data.OleDb;
 using System.IO;
@@ -17,20 +16,20 @@ namespace Server
 
         private string _PluginName = "GetTemperatur.html";
         private bool _isPlugin = false;
-        private IList<string> _Parameter;
+        private string[] _Parameter;
         private string _Response;
 
-        private string _ContentType = "text/html";
-
-        private string _Year;
-        private string _Month;
-        private string _Day;
+        private uint _Year;
+        private uint _Month;
+        private uint _Day;
+        private uint _Max;
 
         private StreamWriter _sw;
-        private Response Resp = new Response();
+        private Response _Resp = new Response();
 
 
         // ##########################################################################################################################################
+        // StreamWriter
         public StreamWriter Writer
         {
             set
@@ -69,24 +68,12 @@ namespace Server
 
 
         // ##########################################################################################################################################
-        public IList<string> doSomething
+        public string[] doSomething
         {
             set
             {
                 _Parameter = value;
                 showMenu();
-            }
-
-        }
-
-
-
-        // ##########################################################################################################################################
-        public string ContentType
-        {
-            get
-            {
-                return _ContentType;
             }
         }
 
@@ -96,43 +83,30 @@ namespace Server
         // ##########################################################################################################################################
         private void showMenu()
         {
-            //_Response = new List<string>();
-
             // Es wird in einem Thread ständig ein "Sensor" ausgelesen und in die Datenbank gespeichert
+            // dieser Thread wird gestartet, wenn der Server gestartet wird
             if (_Parameter == null)
             {
                 //Console.WriteLine("Es werden Sensordaten in die Datenbank gespeicher");
-                Thread thread = new Thread(insertData);
+                readSensor Sensor = new readSensor();
+
+                Thread thread = new Thread(Sensor.insertData);
                 thread.Start();
             }
 
             // Es wurden keine Parameter übergeben
-            else if (_Parameter.Count < 2)
+            else if (_Parameter.Length < 2)
             {
                 // Anzeigen der Form
-                if (_Parameter[0] == "Messwerte")
+                if (_Parameter[0] == _PluginName)
                 {
                     displayForm();
                 }
-
-                // Anzeigen aller Möglichkeiten
-                else if (_Parameter[0] == _PluginName)
-                {
-                    _Response += @"
-                            <button><a href=""GetTemperatur.html?Sensor"">Messwerte aus Sensor auslesen</a></button>
-                            <br />
-                            <button><a href=""GetTemperatur.html?Messwerte"">Messwerte filtern</a></button>
-                        ";
-
-                    Resp.sendMessage(_sw, _Response, _ContentType);
-                }
-
             }
+
+            // Es wurden Paramter übergeben --> Parameter aufbereiten und Ergebnisse ausgeben
             else
             {
-                // Parameter wurden übergeben
-                // Response erstellen
-                //displayForm();
                 createResponse();
             }
 
@@ -155,11 +129,15 @@ namespace Server
                     <label>Day</label>
                     <input type=""text"" name=""day"" value=""25"" />
                     </br>
+                    <label>max. Eintr&auml;ge pro Seite</label>
+                    <input type=""text"" name=""max"" value=""30"" />
+                    </br>
                     <input type=""submit"" value=""Submit"" />
                 </form>
             ";
 
-            Resp.sendMessage(_sw, _Response, _ContentType);
+            _Resp.ContentType = "text/html";
+            _Resp.sendMessage(_sw, _Response);
 
         }
 
@@ -170,219 +148,123 @@ namespace Server
         // ##########################################################################################################################################
         private void createResponse()
         {
-            int counter = 1;
-            int groupcounter = 1;
-
-            int a = 0;
-
             // REST-Abfrage --> XML
-            if (_Parameter.Count == 3)
+            if (_Parameter.Length == 3)
             {
-                _Year = _Parameter[0];
-                _Month = _Parameter[1];
-                _Day = _Parameter[2];
+                _Year = Convert.ToUInt32(_Parameter[0]);
+                _Month = Convert.ToUInt32(_Parameter[1]);
+                _Day = Convert.ToUInt32(_Parameter[2]);
 
                 // XML-File erstellen
-                _ContentType = "text/xml";
-                createXML();
+                createXML XML = new createXML();
+                _Response = XML.Create(_Year, _Month, _Day);
+
+                _Resp.ContentType = "text/xml";
             }
 
             // Abfrage über Form
-            else if (_Parameter.Count == 6)
+            else if (_Parameter.Length == 8)
             {
-                for (int i = 0; i < _Parameter.Count; i++)
+                int a = 0;
+
+                // Parameter und Werte suchen
+                for (int i = 0; i < _Parameter.Length; i++)
                 {
                     a = i;
                     if (_Parameter[i] == "year")
                     {
-                        _Year = _Parameter[a + 1];
+                        _Year = Convert.ToUInt32(_Parameter[a + 1]);
                     }
                     else if (_Parameter[i] == "month")
                     {
-                        _Month = _Parameter[a + 1];
+                        _Month = Convert.ToUInt32(_Parameter[a + 1]);
                     }
                     else if (_Parameter[i] == "day")
                     {
-                        _Day = _Parameter[a + 1];
+                        _Day = Convert.ToUInt32(_Parameter[a + 1]);
+                    }
+                    else if (_Parameter[i] == "max")
+                    {
+                        _Max = Convert.ToUInt32(_Parameter[a + 1]);
                     }
                 }
 
 
-
-                using (SqlConnection db = new SqlConnection(
-                    @"Data Source=.\SqlExpress;
-                Initial Catalog=SWE_Temperatur;
-	            Integrated Security=true;"))
+                if ((_Year.ToString().Length == 4) &&
+                        ((_Month >= 1) & (_Month <= 12)) &&
+                        ((_Day >= 1) & (_Day <= 31))
+                   )
                 {
-                    db.Open();
 
+                    // Datenbank 
+                    //              Database:   SEW_Temperatur
+                    //              Uuser:      local
 
-                    SqlCommand cmd = new SqlCommand("SELECT [DATE], [TEMPERATUR] FROM [MESSDATEN]", db);
-
-                    using (SqlDataReader rd = cmd.ExecuteReader())
+                    using (SqlConnection db = new SqlConnection(
+                        @"Data Source=.\SqlExpress;
+                    Initial Catalog=SWE_Temperatur;
+	                Integrated Security=true;"))
                     {
-                        _Response += "<div id='container'>";
-                        while (rd.Read())
+                        db.Open();
+
+                        // SELECT
+                        SqlCommand cmd = new SqlCommand("SELECT [DATE], [TEMPERATUR] FROM [MESSDATEN]", db);
+
+
+                        int counter = 1;        // Zählt die Einträge pro Seite (max. _Max)
+                        int groupcounter = 1;   // zählt die Gruppen zu je _Max Einträgen
+
+                        // Es werden Ergebnisse gesucht und wenn gefunden, in <div>'s eingetragen
+                        using (SqlDataReader rd = cmd.ExecuteReader())
                         {
-                            //Console.Write(rd.GetDateTime(0).Date.Year + " - ");
-                            //Console.Write(rd.GetDateTime(0).Date.Month + " - ");
-                            //Console.WriteLine(rd.GetDateTime(0).Date.Day);
-
-                            if ((rd.GetDateTime(0).Date.Year.ToString() == _Year) &&
-                                (rd.GetDateTime(0).Date.Month.ToString() == _Month) &&
-                                (rd.GetDateTime(0).Date.Day.ToString() == _Day))
+                            _Response += "<div id='container'>";
+                            while (rd.Read())
                             {
+                                //Console.Write(rd.GetDateTime(0).Date.Year + " - ");
+                                //Console.Write(rd.GetDateTime(0).Date.Month + " - ");
+                                //Console.WriteLine(rd.GetDateTime(0).Date.Day);
 
-                                // Ausgabe wird für die Blätterfunktion gruppiert (30 Elemente --> 1 Gruppe) 
-                                if (counter == 1)
+                                if ((rd.GetDateTime(0).Date.Year.ToString() == _Year.ToString()) &&
+                                    (rd.GetDateTime(0).Date.Month.ToString() == _Month.ToString()) &&
+                                    (rd.GetDateTime(0).Date.Day.ToString() == _Day.ToString()))
                                 {
-                                    _Response += "<div id='group" + groupcounter + "' class='group'>";
-                                    groupcounter++;
-                                }
-                                counter++;
 
-                                // Inhalt aus der DB
-                                _Response += "<div class='line'><div class='min20'>" + rd.GetDateTime(0).ToString() + "</div><div class='min20'>" + rd.GetDecimal(1).ToString() + "</div></div>";
+                                    // Ausgabe wird für die Blätterfunktion gruppiert (_Max Elemente = 1 Gruppe) 
+                                    if (counter == 1)
+                                    {
+                                        _Response += "<div id='group" + groupcounter + "' class='group'>";
+                                        groupcounter++;
+                                    }
+                                    counter++;
 
-                                if (counter == 30)
-                                {
-                                    _Response += "</div>";
-                                    counter = 1;
+                                    // Inhalt aus der DB
+                                    _Response += "<div class='line'><div class='min20'>" + rd.GetDateTime(0).ToString() + "</div><div class='min20'>" + rd.GetDecimal(1).ToString() + "</div></div>";
+
+                                    // Es werden maximal _Max Ergebnisse pro "Seite" ausgegeben --> Blätterfunktion
+                                    if (counter == _Max)
+                                    {
+                                        _Response += "</div>";
+                                        counter = 1;
+                                    }
                                 }
                             }
+                            _Response += "</div>";
                         }
-                        _Response += "</div>";
                     }
                 }
-            }
 
-            Resp.sendMessage(_sw, _Response, _ContentType);
-        }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        // ##########################################################################################################################################
-        private void insertData()
-        {
-            /*
-            System.Timers.Timer timer;
-            timer = new System.Timers.Timer();
-            timer.Interval = 1000; //set interval of checking here
-            timer.Elapsed += new ElapsedEventHandler(Insert);
-            timer.Start();
-            */
-
-            System.Timers.Timer timer = new System.Timers.Timer();
-            timer.Elapsed += new ElapsedEventHandler(Insert);
-            timer.Interval = 10000;
-            timer.Enabled = true;
-
-        }
-
-
-
-
-        // ##########################################################################################################################################
-        private void Insert(object source, ElapsedEventArgs e)
-        {
-            Random rnd = new Random();
-            float number = rnd.Next(100, 300);
-
-            float Temp = (number / 10);
-            
-            Console.WriteLine("{0:0.00}", Temp);
-
-
-            using (SqlConnection db = new SqlConnection(@"Data Source=.\SqlExpress;Initial Catalog=SWE_Temperatur; Integrated Security=true;"))
-            {
-                db.Open();
-
-                // Komma durch Punkt ersetzen, weil der Wert in der DB als x.xx gespeichert werden muss
-                string str = Convert.ToString(Temp);
-                str = str.Replace(",", ".");
-
-                SqlCommand insert = new SqlCommand(@"INSERT INTO [MESSDATEN] ([DATE], [TEMPERATUR], [TIMESTAMP]) VALUES (getdate(), " + str + ", getdate())", db);
-                insert.ExecuteNonQuery();
-
-                db.Close();
-
-            }
-        }
-
-
-
-
-
-        // ##########################################################################################################################################
-        private void createXML()
-        {
-            string date = DateTime.Now.ToString("yyyy_MM_dd_HH_mm_ss_ffff");
-            string file = Directory.GetCurrentDirectory() + "/XML/TemperatureXML_" + date + ".xml";
-
-            string xml;
-
-            // Create a file to write to.
-            xml = @"<?xml version='1.0' encoding='UTF-8' standalone='yes'?>
-        <PluginTemperatur>
-            <title>Plugin Temperatur</title>
-";
-
-
-            using (SqlConnection db = new SqlConnection(
-                @"Data Source=.\SqlExpress;
-                Initial Catalog=SWE_Temperatur;
-	            Integrated Security=true;"))
-            {
-                db.Open();
-                SqlCommand cmd = new SqlCommand(@"SELECT [DATE], [TEMPERATUR] 
-                                            FROM [MESSDATEN] 
-                                            WHERE YEAR([DATE]) = '" + _Year + "' AND MONTH([DATE]) = '" + _Month + "' AND DAY([DATE]) = '" + _Day + "'", db);
-
-                using (SqlDataReader rd = cmd.ExecuteReader())
+                else
                 {
-                    while (rd.Read())
-                    {
-                        xml = xml + @"
-            <element>
-                <Date>" + _Year + "." + _Month + "." + _Day + @"</Date>
-                <Temperature>" + rd.GetDecimal(1).ToString() + @"</Temperature>
-            </element>"
-;
-
-                    }
+                    Console.WriteLine("ERRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRROR");
+                    _Response = "Error - Bitte ein korrektes Datum eingeben!s";
+                    throw new ArgumentOutOfRangeException("amount");
                 }
+
+                _Resp.ContentType = "text/html";
             }
 
-            xml = xml + @"         
-        </PluginTemperatur>
-    ";
-
-            _Response += xml;
+            // Zum Browser senden
+            _Resp.sendMessage(_sw, _Response);
         }
     }
 }

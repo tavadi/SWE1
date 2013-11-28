@@ -17,9 +17,8 @@ namespace Server
         private string _SplitFirst;
         private string _DecodedUrl;
 
-        private IList<string> _UrlSplit;
+        private string[] _UrlSplit;
         private int _ContentLength;
-
 
 
         // ##########################################################################################################################################
@@ -54,7 +53,7 @@ namespace Server
             {
                 // Je nachdem wieviele Werte übergeben wurden, müssen die Parameter angepasst werden.
                 // [1] = PluginName
-                if (_UrlSplit.Count <= 2)
+                if (_UrlSplit.Length <= 2)
                 {
                     _DecodedUrl = HttpUtility.UrlDecode(_UrlSplit[1]);
                     _DecodedUrl = _DecodedUrl.Replace(" ", "");
@@ -114,7 +113,7 @@ namespace Server
 
         // ##########################################################################################################################################
         // Return Parameter
-        public IList<string> URL
+        public string[] URL
         {
             get
             {

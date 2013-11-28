@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using System.Web;
 using Server;
 
 namespace Server
@@ -14,18 +15,20 @@ namespace Server
         private string _PluginName = "Static.html";
         private bool _isPlugin = false;
 
-        private IList<string> _Parameter;
+        private string[] _Parameter;
         private string _Response;
 
         private string _ContentType;
 
-        private Response Resp = new Response();
-
         private StreamWriter _sw;
+
+        private Response _Resp = new Response();
+
 
 
 
         // ##########################################################################################################################################
+        // Streamwriter
         public StreamWriter Writer
         {
             set
@@ -63,16 +66,20 @@ namespace Server
 
 
         // ##########################################################################################################################################
-        public IList<string> doSomething
+        public string[] doSomething
         {
             set
             {
+                // Parameter werden übergeben
                 _Parameter = value;
 
+                // Erster Aufruf --> Übersichtsseite
                 if (_Parameter[0] == _PluginName)
                 {
                     showFiles();
                 }
+
+                // Weitere Aufrufe --> Fileaufruf
                 else
                 {
                     openFiles();
@@ -83,47 +90,40 @@ namespace Server
 
 
         // ##########################################################################################################################################
-        public string ContentType
-        {
-            get
-            {
-                return _ContentType;
-            }
-        }
-
-
-
-        // ##########################################################################################################################################
         private void showFiles()
         {
+            // Pfad am Server --> gesamter Inhalt wird ausgegeben
             string path = Environment.CurrentDirectory + "\\Files\\";
 
+            // Für jedes File
             foreach (string file in System.IO.Directory.GetFiles(path, "*"))
             {
-                IList<string> Split;
+                // Pfad wird gesplittet --> nur der Filename inkl. Endung wird benötigt
+                IList<string> Split = file.Split('\\');
 
-                Split = file.Split('\\');
-
-
+                string blub = Split.Last();
+                // Im Browser darstellen
                 _Response += @"
                     <button><a href=Static.html?" + Split.Last() + ">" + Split.Last() + @"</a></button>
                     <br />
                 ";
-
-
             }
 
-            _ContentType = "text/html";
-            Resp.sendMessage(_sw, _Response, _ContentType);  
+            // An den Browser senden
+            _Resp.ContentType = "text/html";
+            _Resp.sendMessage(_sw, _Response);  
         }
 
 
         // ##########################################################################################################################################
+        // Files öffnen - Im Browser auf einen Link gedrückt
         private void openFiles()
         {
-            
+
+            // Pfad am Server --> mit entsprechendem File
             string path = Environment.CurrentDirectory + "\\Files\\" + _Parameter[0];
             
+
             byte[] FileContent;
             using (FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read))
             {
@@ -132,39 +132,19 @@ namespace Server
             }
 
 
+            // Dateiendung für den MimeType bestimmen
             string[] FileExtension = _Parameter[0].Split('.');
 
-            switch (FileExtension[1])
-            {
-                case "jpg":
-                    _ContentType = "image/jpeg";
-                    break;
+            // Entsprechenden MimeType auswählen
+            Extensions Extension = new Extensions();
+            _ContentType = Extension.checkExtensions(FileExtension[1]);
 
-                case "png":
-                    _ContentType = "image/png";
-                    break;
 
-                case "gif":
-                    _ContentType = "image/gif";
-                    break;
-
-                case "txt":
-                    _ContentType = "image/plain";
-                    break;
-
-                case "xml":
-                    _ContentType = "image/xml";
-                    break;
-
-                default:
-                    _ContentType = "application/octet-stream";
-                    break;
-            }
-
+            // An den Browser schicken
+            _Resp.sendMessage(_sw, FileContent, _ContentType, _Parameter[0]);
             
-            Resp.sendMessage(_sw, FileContent, _ContentType);
-
-             
         }
-    }
+    }   
 }
+
+
