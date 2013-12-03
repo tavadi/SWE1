@@ -10,9 +10,9 @@ namespace Server
     class Extensions
     {
 
-        public string checkExtensions(string FileExtension)
+        public string checkExtensions(string fileExtension)
         {
-            switch (FileExtension)
+            switch (fileExtension)
             {
 
                 // ##########################################################################################################################################

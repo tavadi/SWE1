@@ -15,20 +15,20 @@ namespace Server
     public class Navi : IPlugins
     {
 
-        private string _PluginName = "Navi.html";
+        private string _pluginName = "Navi.html";
         private bool _isPlugin = false;
+
+        // für die Aktualisierung der Daten --> währenddessen kein Zugriff
         private static bool _isPreparing = true;
 
-        private string[] _Parameter;
-        private string _Response;
+        private string[] _parameter;
+        private string _response;
 
         private StreamWriter _sw;
-        private Response _Resp = new Response();
+        private Response _resp = new Response();
 
         private static Dictionary<string, List<string>> _StreetCity = new Dictionary<string, List<string>>();
 
-        //private int counter = 0;
-        //private int counter2 = 0;
 
 
         // ##########################################################################################################################################
@@ -47,14 +47,14 @@ namespace Server
         {
             get
             {
-                Console.WriteLine("ICH BIN DAS PLUGIN: " + _PluginName);
-                return _PluginName;
+                Console.WriteLine("ICH BIN DAS PLUGIN: " + _pluginName);
+                return _pluginName;
             }
         }
 
 
         // ##########################################################################################################################################
-        public bool isPlugin
+        public bool IsPlugin
         {
             set
             {
@@ -68,130 +68,78 @@ namespace Server
         }
 
 
-
         // ##########################################################################################################################################
-        public bool isPreparing
+        private string[] Parameter
         {
             set
             {
-                _isPreparing = value;
-            }
-
-            get
-            {
-                return _isPreparing;
+                _parameter = value;
             }
         }
 
 
-
         // ##########################################################################################################################################
-        public string[] doSomething
+        public void Init(string[] parameter)
         {
-            set
-            {
-                _Parameter = value;
-                showMenu();
-            }
+            Parameter = parameter;
         }
 
 
 
+
         // ##########################################################################################################################################
-        public void showMenu()
+        public void Run()
         {
-            if (_Parameter == null)
+            // Beim Programmstart wird das XML-File in einem eigenen Thread automatisch eingelesen
+            if (_parameter == null)
             {
+                // Status setzen, damit währenddessen nicht drauf zugegriffen werden kann
                 _isPreparing = true;
 
                 Thread thread = new Thread(Preparing);
                 thread.Start();
             }
 
-            else if (_Parameter[0] == _PluginName)
+            else if (_parameter[0] == _pluginName)
             {
-                displayForm();
+                DisplayForm();
             }
 
-            else if (_Parameter[0] == "Preparing")
+            else if (_parameter[0] == "Preparing")
             {
-                if (_isPreparing == false)
-                {
-                    _isPreparing = true;
-
-                    Thread thread = new Thread(Preparing);
-                    thread.Start();
-
-                    _Response = "Bitte warten Sie, w&auml;hrend die Daten aktualisiert werden";
-                }
-                else
-                {
-                    _Response = "Die Daten werden gerade aktualisiert. Bitte probieren Sie es sp&auml;ter erneut!";
-                }
+                PrepareXMLFile();
             }
 
-            else if (_Parameter[0] == "Navigation")
+            else if (_parameter[0] == "Navigation")
             {
-                _Response += @"
-                    <form method=""POST"" action=""Navi.html?NavigationSearch"">
-                        <label>Strassenname</label>
-                        <input type=""text"" name=""street"" value=""Barrett Lane"" />
-                        </br>
-                        <input type=""submit"" value=""Submit"" />
-                    </form>
-                ";
+                DisplayInputForm();
             }
 
-            else if (_Parameter[0] == "street")
+            else if (_parameter[0] == "street")
             {
-                if (_isPreparing == false)
-                {
-                    string DecodedParameter = _Parameter[1].Replace("+", " ");
-
-                    string DecodedParam = HttpUtility.UrlDecode(DecodedParameter);
-
-
-                    foreach (KeyValuePair<string, List<string>> kvp in _StreetCity)
-                    {
-                        try
-                        {
-                            if (kvp.Key == DecodedParam)
-                            {
-                                int size = kvp.Value.Count;
-
-                                for (int i = 0; i < size; i++)
-                                {
-                                    //Console.WriteLine(kvp.Value[i]);
-                                    _Response += kvp.Value[i];
-                                    _Response += "<br />";
-                                }
-                            }
-                        }
-                        catch
-                        {
-                            _Response = "Kein Eintrag vorhanden";
-                        }
-                    }
-                }
-                else
-                {
-                    _Response = "Die Daten werden gerade aktualisiert. Bitte probieren Sie es sp&auml;ter erneut!";
-                }
+                PrepareAnswer();
             }
 
 
-            _Resp.ContentType = "text/html";
-            _Resp.sendMessage(_sw, _Response);
+            if (_parameter != null)
+            {
+                _resp.ContentType = "text/html";
+                _resp.SendMessage(_sw, _response);
+            }
         }
 
 
         // ##########################################################################################################################################
         private void Preparing()
         {
-            DateTime date1 = DateTime.Now;
-            Console.WriteLine(date1.ToString());
-
+            // Zeitmessung - BEGINN
             Console.Beep();
+
+            DateTime date_begin = DateTime.Now;
+            Console.WriteLine(date_begin.ToString());
+
+
+
             // Pfad am Server --> gesamter Inhalt wird ausgegeben
             string path = "C:\\Ress\\antarctica-latest.osm";
             Console.WriteLine(path);
@@ -214,41 +162,116 @@ namespace Server
             }
 
 
+            // Zeitmessung - ENDE
             Console.Beep();
 
-            DateTime date2 = DateTime.Now;
-            Console.WriteLine(date2.ToString());
-            Console.WriteLine(date2 - date1);
-            Console.WriteLine("============================================done============================================");
+            DateTime date_end = DateTime.Now;
+            Console.WriteLine(date_end.ToString());
+            Console.WriteLine(date_end - date_begin);
 
-            _Response = "READY";
+            Console.WriteLine();
+            Console.WriteLine();
+            Console.WriteLine("DICTIONARY WURDE VOLLSTÄNDIG AKTUALISIERT");
+            Console.WriteLine();
+            Console.WriteLine();
+
+            _response = "Ihr Datenquelle " + path + " wurde erfolgreich aktualisiert!";
 
             _isPreparing = false;
-
-
         }
 
 
 
         // ##########################################################################################################################################
-        private void displayForm()
+        private void DisplayForm()
         {
-            _Response =
+            _response =
                @"
                 <html>
                     <head> 
                         <title>SensorCloud</title> 
                     </head> 
                     <body>
-                        <button><a href=""Navi.html?Preparing"">Stra&szlig;enkarte neu aufbereiten</a></button>
+                        <button><a href='Navi.html?Preparing'>Stra&szlig;enkarte neu aufbereiten</a></button>
                         <br />
-                        <button><a href=""Navi.html?Navigation"">Stra&szlig;en <--> Orte</a></button>
+                        <button><a href='Navi.html?Navigation'>Stra&szlig;en <--> Orte</a></button>
                     </body> 
                 </html>";
 
-            _Resp.sendMessage(_sw, _Response);
+            _resp.SendMessage(_sw, _response);
 
         }
+
+
+        // ##########################################################################################################################################
+        private void PrepareXMLFile()
+        {
+            if (_isPreparing == false)
+            {
+                _isPreparing = true;
+
+                Thread thread = new Thread(Preparing);
+                thread.Start();
+
+                _response = "Bitte warten Sie, w&auml;hrend die Daten aktualisiert werden";
+            }
+            else
+            {
+                _response = "Die Daten werden gerade aktualisiert. Bitte probieren Sie es sp&auml;ter erneut!";
+            }
+        }
+
+
+        // ##########################################################################################################################################
+        private void DisplayInputForm()
+        {
+            _response += @"
+                <form method='POST' action='Navi.html?NavigationSearch'>
+                    <label>Strassenname</label>
+                    <input type='text' name='street' value='Barrett Lane' />
+                    </br>
+                    <input type='submit' value='Submit' />
+                </form>
+            ";
+        }
+
+
+        // ##########################################################################################################################################
+        private void PrepareAnswer()
+        {
+            if (_isPreparing == false)
+            {
+                string decodedParameter = _parameter[1].Replace("+", " ");
+
+                string decodedParam = HttpUtility.UrlDecode(decodedParameter);
+
+                foreach (KeyValuePair<string, List<string>> kvp in _StreetCity)
+                {
+                    try
+                    {
+                        if (kvp.Key == decodedParam)
+                        {
+                            int size = kvp.Value.Count;
+
+                            for (int i = 0; i < size; i++)
+                            {
+                                _response += kvp.Value[i];
+                                _response += "<br />";
+                            }
+                        }
+                    }
+                    catch
+                    {
+                        _response = "Kein Eintrag vorhanden";
+                    }
+                }
+            }
+            else
+            {
+                _response = "Die Daten werden gerade aktualisiert. Bitte probieren Sie es sp&auml;ter erneut!";
+            }
+        }
+
 
 
         // ##########################################################################################################################################
@@ -335,42 +358,6 @@ namespace Server
             return counter;
         }
         */
-
-    }
-
-
-
-    public class Address
-    {
-        private string _City;
-        private string _Street;
-
-        
-        public string City
-        {
-            set
-            {
-                _City = value;
-            }
-
-            get
-            {
-                return _City;
-            }
-        }
-
-        public string Street
-        {
-            set
-            {
-                _Street = value;
-            }
-
-            get
-            {
-                return _Street;
-            }
-        }
 
     }
 }

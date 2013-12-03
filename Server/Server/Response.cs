@@ -10,57 +10,56 @@ namespace Server
 {
     public class Response
     {
-        private LogFile LogFile;
+        private LogFile _logFile;
 
-        private string _ContentType;
-        private string _Filename;
-
-        private string _HTMLHeader;
-        private string _HTMLFooter;
+        private string _contentType;
+        private string _filename;
 
         private int _size;
 
         private StreamWriter _sw;
 
+        private Html html = new Html();
+
         
         // ##########################################################################################################################################
-        public void sendMessage(StreamWriter sw, string Response)
+        public void SendMessage(StreamWriter sw, string response)
         {
             _sw = sw;
 
             try
             {
                 // Wenn XML --> nur die reinen XML-Daten zurückschicken
-                if (_ContentType == "text/html")
+                if (_contentType == "text/html")
                 {
-                    HTMLHeader();
-                    HTMLFooter();
-
-                    _size = _HTMLHeader.Length + _HTMLFooter.Length + Response.Length;
+                    _size = html.HtmlHeader.Length + html.HtmlFooter.Length + response.Length;
 
                     // Response abschicken
-                    SendHTTPHeader();
-                    SendHTMLHeader();
-                    _sw.WriteLine(Response);
-                    SendHTMLFooter();
+                    SendHttpHeader();
+
+                    _sw.WriteLine(html.HtmlHeader);
+                    _sw.WriteLine(response);
+                    _sw.WriteLine(html.HtmlFooter);
                 }
 
                 // Wenn es "text/html" ist, die Nachrichten in die HTML-Seite einbetten
-                else if (_ContentType == "text/xml")
+                else if (_contentType == "text/xml")
                 {
-                    _size = Response.Length;
+                    _size = response.Length;
 
-                    SendHTTPHeader();
-                    _sw.WriteLine(Response);
+                    SendHttpHeader();
+                    _sw.WriteLine(response);
                 }
             }
-            catch
+            catch (Exception e)
             {
-                Response = "Error: Response invalid";
+                Console.WriteLine("Error: " + e);
 
-                _size = Response.Length;
-                SendHTTPHeader();
-                _sw.WriteLine(Response);
+                response = "Error: " + e;
+
+                _size = response.Length;
+                SendHttpHeader();
+                _sw.WriteLine(response);
             }
 
             _sw.Flush();
@@ -70,167 +69,46 @@ namespace Server
 
 
         // ##########################################################################################################################################
-        public void sendMessage(StreamWriter sw, byte[] Message, string ContentType, string Filename)
+        public void SendMessage(StreamWriter sw, byte[] message, string filename)
         {
             _sw = sw;
-            _size = Message.Length;
-            _ContentType = ContentType;
-            _Filename = Filename;
+            _size = message.Length;
+            _filename = filename;
 
 
-            SendHTTPHeader();
+            SendHttpHeader();
             sw.Flush();
-            sw.BaseStream.Write(Message, 0, Message.Length);
+            sw.BaseStream.Write(message, 0, message.Length);
             sw.Flush();
 
         }
 
 
         // ##########################################################################################################################################
-        private void HTMLHeader()
-        {
-            _HTMLHeader =
-                    @"
-                <html>
-                    <head> 
-                        <title>SensorCloud</title> 
-
-                        <script src='//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js'></script>
-
-                        <style type=""text/css"">
-                            
-                            #container {
-                                width:100%;
-                            }
-                            
-                            .line {
-                                padding:10px;
-                                width:100%;
-                            }
-
-                            .min20 {
-                                width:20%;
-                                float:left;
-                                background-color:#D8D8D8;
-                            }
-
-                            .group {
-                                visibility:hidden;
-                                width:100%;
-                                position:absolute;
-                                padding-left:20%;
-                            }
-
-                        </style>
-
-
-
-
-
-                        <script language='javascript' type='text/javascript'>
-
-                            var groups = 1;
-
-                            function countGroups()
-                            {
-                                groups = $('.group').length
-
-                                //alert(groups);
-
-
-                                // Ersten Ergebnisse sichtbar machen
-                                $( '#group' + 1 ).css( 'visibility', 'visible' );
-
-
-                                for (var i = 1; i <= groups; i++)
-                                {
-                                    $('#navigation').append('<a href=""#"" id=""' + i + '"" onClick=""javascript:show_data(this.id)"">' + ' ' + i + ' ' + '</a>');
-                                }
-
-                                /*
-                                for (var i = 1; i <= groups; i++)
-                                {
-                                    $( '#grouplink' + i ).click(function() {
-
-                                        $( '#group' + i ).css( 'visibility', 'visible' );
-                                    });
-                                }
-                                */
-                            }      
-
-                            function show_data(id)
-                            {
-                                for (var i = 1; i <= groups; i++)
-                                {
-                                    $( '#group' + i ).css( 'visibility', 'hidden' );
-                                }
-
-                                $( '#group' + id ).css( 'visibility', 'visible' );
-                            }                     
-
-                        </script>
-
-                    </head> 
-                    <body>
-                        <script>
-                        window.onload=countGroups;
-                        </script>
-
-                        <div id='navigation'></div>
-            ";
-        }
-
-
-
-        // ##########################################################################################################################################
-        private void HTMLFooter()
-        {
-            _HTMLFooter += @"
-                    </body> 
-                </html>";
-        }
-
-
-
-
-
-
         public string ContentType
         {
             set
             {
-                _ContentType = value;
+                _contentType = value;
             }
         }
 
+
+
         // ##########################################################################################################################################
-        private void SendHTTPHeader()
+        private void SendHttpHeader()
         {
             _sw.WriteLine("HTTP/1.1 200 OK");
             _sw.WriteLine("Server: Apache/1.3.29 (Unix) PHP/4.3.4");
-            _sw.WriteLine("Content-Type: " + _ContentType + "; charset=UTF-8");
+            _sw.WriteLine("Content-Type: " + _contentType + "; charset=UTF-8");
             _sw.WriteLine("Content-Length: " + _size);
             _sw.WriteLine("Content-Language: de");
 
-            if (_ContentType == "application/octet-stream")
-                _sw.WriteLine("Content-Disposition: attachment; filename=" + _Filename);
+            if (_contentType == "application/octet-stream")
+                _sw.WriteLine("Content-Disposition: attachment; filename=" + _filename);
 
             _sw.WriteLine("Connection: close"); 
             _sw.WriteLine();
-        }
-
-
-        // ##########################################################################################################################################
-        private void SendHTMLHeader()
-        {
-            _sw.WriteLine(_HTMLHeader);
-        }
-
-
-        // ##########################################################################################################################################
-        private void SendHTMLFooter()
-        {
-            _sw.WriteLine(_HTMLFooter);
         }
     }
 }

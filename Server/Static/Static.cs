@@ -12,17 +12,16 @@ namespace Server
     public class Static : IPlugins
     {
 
-        private string _PluginName = "Static.html";
+        private string _pluginName = "Static.html";
         private bool _isPlugin = false;
 
-        private string[] _Parameter;
-        private string _Response;
+        private string[] _parameter;
+        private string _response;
 
-        private string _ContentType;
 
         private StreamWriter _sw;
 
-        private Response _Resp = new Response();
+        private Response _resp = new Response();
 
 
 
@@ -43,14 +42,14 @@ namespace Server
         {
             get
             {
-                Console.WriteLine("ICH BIN DAS PLUGIN: " + _PluginName);
-                return _PluginName;
+                Console.WriteLine("ICH BIN DAS PLUGIN: " + _pluginName);
+                return _pluginName;
             }
         }
 
 
         // ##########################################################################################################################################
-        public bool isPlugin
+        public bool IsPlugin
         {
             set
             {
@@ -64,33 +63,45 @@ namespace Server
         }
 
 
-
         // ##########################################################################################################################################
-        public string[] doSomething
+        private string[] Parameter
         {
             set
             {
                 // Parameter werden übergeben
-                _Parameter = value;
+                _parameter = value;
+                //Menu();
+            }
+        }
 
-                // Erster Aufruf --> Übersichtsseite
-                if (_Parameter[0] == _PluginName)
-                {
-                    showFiles();
-                }
 
-                // Weitere Aufrufe --> Fileaufruf
-                else
-                {
-                    openFiles();
-                }
+        // ##########################################################################################################################################
+        public void Init(string[] parameter)
+        {
+            Parameter = parameter;
+        }
+
+
+        // ##########################################################################################################################################
+        public void Run()
+        {
+            // Erster Aufruf --> Übersichtsseite
+            if (_parameter[0] == _pluginName)
+            {
+                ShowFiles();
+            }
+
+            // Weitere Aufrufe --> Fileaufruf
+            else
+            {
+                OpenFiles();
             }
         }
 
 
 
         // ##########################################################################################################################################
-        private void showFiles()
+        private void ShowFiles()
         {
             // Pfad am Server --> gesamter Inhalt wird ausgegeben
             string path = Environment.CurrentDirectory + "\\Files\\";
@@ -99,50 +110,49 @@ namespace Server
             foreach (string file in System.IO.Directory.GetFiles(path, "*"))
             {
                 // Pfad wird gesplittet --> nur der Filename inkl. Endung wird benötigt
-                IList<string> Split = file.Split('\\');
+                IList<string> split = file.Split('\\');
 
-                string blub = Split.Last();
+                string blub = split.Last();
                 // Im Browser darstellen
-                _Response += @"
-                    <button><a href=Static.html?" + Split.Last() + ">" + Split.Last() + @"</a></button>
+                _response += @"
+                    <button><a href=Static.html?" + split.Last() + ">" + split.Last() + @"</a></button>
                     <br />
                 ";
             }
 
             // An den Browser senden
-            _Resp.ContentType = "text/html";
-            _Resp.sendMessage(_sw, _Response);  
+            _resp.ContentType = "text/html";
+            _resp.SendMessage(_sw, _response);  
         }
 
 
         // ##########################################################################################################################################
         // Files öffnen - Im Browser auf einen Link gedrückt
-        private void openFiles()
+        private void OpenFiles()
         {
 
             // Pfad am Server --> mit entsprechendem File
-            string path = Environment.CurrentDirectory + "\\Files\\" + _Parameter[0];
+            string path = Environment.CurrentDirectory + "\\Files\\" + _parameter[0];
             
 
-            byte[] FileContent;
+            byte[] fileContent;
             using (FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read))
             {
-                FileContent = new byte[fs.Length];
-                fs.Read(FileContent, 0, Convert.ToInt32(fs.Length));
+                fileContent = new byte[fs.Length];
+                fs.Read(fileContent, 0, Convert.ToInt32(fs.Length));
             }
 
 
             // Dateiendung für den MimeType bestimmen
-            string[] FileExtension = _Parameter[0].Split('.');
+            string[] fileExtension = _parameter[0].Split('.');
 
             // Entsprechenden MimeType auswählen
-            Extensions Extension = new Extensions();
-            _ContentType = Extension.checkExtensions(FileExtension[1]);
+            Extensions extension = new Extensions();
+            _resp.ContentType = extension.checkExtensions(fileExtension[1]);
 
 
             // An den Browser schicken
-            _Resp.sendMessage(_sw, FileContent, _ContentType, _Parameter[0]);
-            
+            _resp.SendMessage(_sw, fileContent, _parameter[0]);
         }
     }   
 }

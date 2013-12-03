@@ -10,18 +10,16 @@ namespace Server
 {
     public class Request
     {
-        private string[] _Parameter;
-        private string _PluginName;
-        private List<string> _Header;
-
-
+        private string[] _parameter;
+        private string _pluginName;
+        private List<string> _header;
 
 
         // ##########################################################################################################################################
         public Request(StreamReader sr)
         {
             // HTTP-Header Informationen
-            _Header = new List<string>();
+            _header = new List<string>();
 
 
             // Read the Message from Client
@@ -32,30 +30,30 @@ namespace Server
 
 
                 // Split 
-                string[] Url = line.Split(' ');
+                string[] url = line.Split(' ');
                 
                 // Method == GET
-                if (line.StartsWith("GET") && (Url[1] != "/favicon.ico"))
+                if (line.StartsWith("GET") && (url[1] != "/favicon.ico"))
                 {
                     //string[] Header;
                     
-                    _Header = new List<string>();
-                    _Header.Add(Url[0]);
-                    _Header.Add(Url[1]);
+                    _header = new List<string>();
+                    _header.Add(url[0]);
+                    _header.Add(url[1]);
                     
                 }
 
                 // Method == POST
                 else if (line.StartsWith("POST"))
                 {
-                    _Header.Add(Url[0]);
-                    _Header.Add(Url[1]);
+                    _header.Add(url[0]);
+                    _header.Add(url[1]);
                 }
 
                 // Content-Length muss für POST gespeichert werden
                 else if (line.StartsWith("Content-Length"))
                 {
-                    _Header.Add(Url[1]);
+                    _header.Add(url[1]);
                 }
 
                 if (string.IsNullOrEmpty(line)) break;
@@ -63,34 +61,34 @@ namespace Server
 
 
 
-            if (_Header.Count > 0)
+            if (_header.Count > 0)
             {
                 // Method == GET
-                if (_Header[0] == "GET")
+                if (_header[0] == "GET")
                 {
                     // Call Contructor with 1 Parameter
-                    Url URL = new Url(_Header[1]);
+                    Url url = new Url(_header[1]);
 
-                    URL.SplitURLFirst("GET");
-                    URL.SplitURLSecond();
+                    url.SplitUrlFirst("GET");
+                    url.SplitUrlSecond();
 
-                    _PluginName = URL.Name;
-                    _Parameter = URL.URL;
+                    _pluginName = url.Name;
+                    _parameter = url.URL;
 
                     //Console.WriteLine("GET");
                 }
 
                 // Method == POST
-                else if (_Header[0] == "POST")
+                else if (_header[0] == "POST")
                 {
                     // Call Constructor with 3 Parameter
-                    Url URL = new Url(_Header[1], Convert.ToInt32(_Header[2]), sr);
+                    Url url = new Url(_header[1], Convert.ToInt32(_header[2]), sr);
 
-                    URL.SplitURLFirst("POST");
-                    URL.SplitURLSecond();
+                    url.SplitUrlFirst("POST");
+                    url.SplitUrlSecond();
 
-                    _PluginName = URL.Name;
-                    _Parameter = URL.URL;
+                    _pluginName = url.Name;
+                    _parameter = url.URL;
 
                     //Console.WriteLine("POST");                
                 }
@@ -99,19 +97,14 @@ namespace Server
 
 
 
-
-
         // ##########################################################################################################################################
         public string Name
         {
             get
             {
-                return _PluginName;
+                return _pluginName;
             }
         }
-
-
-
 
 
         // ##########################################################################################################################################
@@ -120,7 +113,7 @@ namespace Server
         {
             get
             {
-                return _Parameter;
+                return _parameter;
             }
         }
 

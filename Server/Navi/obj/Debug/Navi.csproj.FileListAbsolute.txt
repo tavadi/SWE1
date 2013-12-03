@@ -1,7 +1,7 @@
 C:\Users\Daniel\Documents\GitHub\SWE1\Server\Navi\bin\Debug\Navi.dll
 C:\Users\Daniel\Documents\GitHub\SWE1\Server\Navi\bin\Debug\Navi.pdb
-C:\Users\Daniel\Documents\GitHub\SWE1\Server\Navi\obj\Debug\Navi.dll
-C:\Users\Daniel\Documents\GitHub\SWE1\Server\Navi\obj\Debug\Navi.pdb
-C:\Users\Daniel\Documents\GitHub\SWE1\Server\Navi\obj\Debug\Navi.csprojResolveAssemblyReference.cache
 C:\Users\Daniel\Documents\GitHub\SWE1\Server\Navi\bin\Debug\Server.exe
 C:\Users\Daniel\Documents\GitHub\SWE1\Server\Navi\bin\Debug\Server.pdb
+C:\Users\Daniel\Documents\GitHub\SWE1\Server\Navi\obj\Debug\Navi.csprojResolveAssemblyReference.cache
+C:\Users\Daniel\Documents\GitHub\SWE1\Server\Navi\obj\Debug\Navi.dll
+C:\Users\Daniel\Documents\GitHub\SWE1\Server\Navi\obj\Debug\Navi.pdb

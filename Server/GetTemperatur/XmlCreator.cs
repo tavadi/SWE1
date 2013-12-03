@@ -9,11 +9,11 @@ using System.Data.OleDb;
 
 namespace Server
 {
-    class createXML
+    class XmlCreator
     {
 
         // ##########################################################################################################################################
-        public string Create(uint Year, uint Month, uint Day)
+        public string Create(uint year, uint month, uint day)
         {
             string xml;
 
@@ -31,9 +31,9 @@ namespace Server
 	            Integrated Security=true;"))
             {
                 db.Open();
-                SqlCommand cmd = new SqlCommand(@"SELECT [DATE], [TEMPERATUR] 
-                                            FROM [MESSDATEN] 
-                                            WHERE YEAR([DATE]) = '" + Year + "' AND MONTH([DATE]) = '" + Month + "' AND DAY([DATE]) = '" + Day + "'", db);
+                SqlCommand cmd = new SqlCommand(@"  SELECT [MESSDATEN].[DATE], [MESSDATEN].[TEMPERATUR] 
+                                                    FROM [MESSDATEN] 
+                                                    WHERE YEAR([DATE]) = '" + year + "' AND MONTH([DATE]) = '" + month + "' AND DAY([DATE]) = '" + day + "'", db);
 
                 using (SqlDataReader rd = cmd.ExecuteReader())
                 {
@@ -41,11 +41,10 @@ namespace Server
                     {
                         xml += @"
                                 <element>
-                                    <Date>" + Year + "." + Month + "." + Day + @"</Date>
+                                    <Date>" + year + "." + month + "." + day + @"</Date>
                                     <Temperature>" + rd.GetDecimal(1).ToString() + @"</Temperature>
-                                </element>"
-;
-
+                                </element>
+                                ";
                     }
                 }
             }

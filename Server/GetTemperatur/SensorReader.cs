@@ -11,11 +11,11 @@ using Server;
 
 namespace Server
 {
-    class readSensor
+    class SensorReader
     {
 
         // ##########################################################################################################################################
-        public void insertData()
+        public void InsertData()
         {
             // Timer der automatisch alle 10 Sekunden die Funktion "Insert" ausführt
             System.Timers.Timer timer = new System.Timers.Timer();

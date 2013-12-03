@@ -19,11 +19,11 @@ namespace Server
                         <title>SensorCloud</title> 
                     </head> 
                     <body>
-                        <button><a href=""GetTemperatur.html"">Plugin Temperatur</a></button>
+                        <button><a href='GetTemperatur.html'>Plugin Temperatur</a></button>
                         <br />
-                        <button><a href=""Static.html"">Plugin Static</a></button>
+                        <button><a href='Static.html'>Plugin Static</a></button>
                         <br />
-                        <button><a href=""Navi.html"">Plugin Navi</a></button>
+                        <button><a href='Navi.html'>Plugin Navi</a></button>
                     </body> 
                 </html>";
 
@@ -31,7 +31,7 @@ namespace Server
 
             Response Response = new Response();
             Response.ContentType = "text/html";
-            Response.sendMessage(sw, msg);
+            Response.SendMessage(sw, msg);
         }
     }
 }

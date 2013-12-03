@@ -12,29 +12,27 @@ namespace Server
     {
         private StreamReader _sr;
 
-        private string _Url;
-        private string _PluginName;
-        private string _SplitFirst;
-        private string _DecodedUrl;
+        private string _url;
+        private string _pluginName;
+        private string _splitFirst;
+        private string _decodedUrl;
 
-        private string[] _UrlSplit;
-        private int _ContentLength;
+        private string[] _urlSplit;
+        private int _contentLength;
 
 
         // ##########################################################################################################################################
-        public Url(string RequestUrl)
+        public Url(string requestUrl)
         {
-            _Url = RequestUrl;
+            _url = requestUrl;
         }
 
 
-
-
         // ##########################################################################################################################################
-        public Url(string RequestUrl, int ContentLength, StreamReader sr)
+        public Url(string requestUrl, int contentLength, StreamReader sr)
         {
-            _Url = RequestUrl;
-            _ContentLength = ContentLength;
+            _url = requestUrl;
+            _contentLength = contentLength;
             _sr = sr;
         }
 
@@ -42,58 +40,71 @@ namespace Server
 
 
         // ##########################################################################################################################################
-        public void SplitURLFirst(string Method)
+        public void SplitUrlFirst(string method)
         {
-            _UrlSplit = _Url.Split( new char [] {'?', '/'}, 3);
+            _urlSplit = _url.Split( new char [] {'?', '/'}, 3);
 
             // Pluginname steht immer an der 1ten Stelle
-            _PluginName = _UrlSplit[1];
- 
-             if (Method == "GET")
+            _pluginName = _urlSplit[1];
+
+            if (method == "GET")
             {
-                // Je nachdem wieviele Werte übergeben wurden, müssen die Parameter angepasst werden.
-                // [1] = PluginName
-                if (_UrlSplit.Length <= 2)
-                {
-                    _DecodedUrl = HttpUtility.UrlDecode(_UrlSplit[1]);
-                    _DecodedUrl = _DecodedUrl.Replace(" ", "");
-                    _UrlSplit[1] = _DecodedUrl;
-                }
-
-                // [1] = Pluginname
-                // [2] = Parameter
-                else
-                {
-                    _DecodedUrl = HttpUtility.UrlDecode(_UrlSplit[2]);
-                    _DecodedUrl = _DecodedUrl.Replace(" ", "");
-                    _UrlSplit[2] = _DecodedUrl;
-                }
-
-
-                foreach (string s in _UrlSplit)
-                {
-                    _SplitFirst = s;
-                }
+                SplitGet();
             }
-            else if (Method == "POST")
+            else if (method == "POST")
             {
-                // Werte aus dem Body filtern
-                var buffer = new char[_ContentLength];
-
-                _sr.Read(buffer, 0, _ContentLength);
-                _SplitFirst = Encoding.UTF8.GetString(buffer.Select(c => (byte)c).ToArray());
+                SplitPost();
             }
         }
 
 
+        // ##########################################################################################################################################
+        public void SplitUrlSecond()
+        {
+            _urlSplit = _splitFirst.Split('&', '=', '/');
+        }
 
 
 
         // ##########################################################################################################################################
-        public void SplitURLSecond()
+        private void SplitGet()
         {
-            _UrlSplit = _SplitFirst.Split('&', '=', '/');
+            // Je nachdem wieviele Werte übergeben wurden, müssen die Parameter angepasst werden.
+            // [1] = PluginName
+            if (_urlSplit.Length <= 2)
+            {
+                _decodedUrl = HttpUtility.UrlDecode(_urlSplit[1]);
+                _decodedUrl = _decodedUrl.Replace(" ", "");
+                _urlSplit[1] = _decodedUrl;
+            }
+
+            // [1] = Pluginname
+            // [2] = Parameter
+            else
+            {
+                _decodedUrl = HttpUtility.UrlDecode(_urlSplit[2]);
+                _decodedUrl = _decodedUrl.Replace(" ", "");
+                _urlSplit[2] = _decodedUrl;
+            }
+
+
+            foreach (string s in _urlSplit)
+            {
+                _splitFirst = s;
+            }
         }
+
+
+        // ##########################################################################################################################################
+        private void SplitPost()
+        {                // Werte aus dem Body filtern
+            var buffer = new char[_contentLength];
+
+            _sr.Read(buffer, 0, _contentLength);
+            _splitFirst = Encoding.UTF8.GetString(buffer.Select(c => (byte)c).ToArray());
+        }
+
+
 
 
 
@@ -104,7 +115,7 @@ namespace Server
         {
             get
             {
-                return _PluginName;
+                return _pluginName;
             }
         }
 
@@ -117,7 +128,7 @@ namespace Server
         {
             get
             {
-                return _UrlSplit;
+                return _urlSplit;
             }
         }
     }

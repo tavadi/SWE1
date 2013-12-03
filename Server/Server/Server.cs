@@ -21,17 +21,16 @@ namespace Server
     {
         //private string _message;
         private bool _isRunning;
-        private Response _Response;
+        private Response _response;
 
 
 
         // ##########################################################################################################################################
         // Konstruktor
-        public Server()     
+        public Server()
         {
-            _Response = new Response();
+            _response = new Response();
         }
-
 
         
         // ##########################################################################################################################################
@@ -50,7 +49,7 @@ namespace Server
 
         
         // ##########################################################################################################################################
-        public void separator()
+        public void Separator()
         {
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine();
@@ -88,10 +87,10 @@ namespace Server
             listener.Start();
 
             // Plugin Temperatur: Sensor auslesen
-            PluginManager PluginManager = new PluginManager("GetTemperatur.html");
+            PluginManager pluginManager = new PluginManager("GetTemperatur.html");
             
             // Plugin Navi - Straßenkarte einlesen
-            PluginManager = new PluginManager("Navi.html");
+            pluginManager = new PluginManager("Navi.html");
 
 
             Console.ForegroundColor = ConsoleColor.Red;
@@ -99,7 +98,7 @@ namespace Server
             Console.WriteLine("Server is running and listen at port 8080 ...");
             Console.WriteLine("Waiting for connection ...");
 
-            separator();
+            Separator();
 
             while (true)
             {
@@ -130,11 +129,11 @@ namespace Server
 
 
             // New Request
-            Request RequestPlugin = new Request(sr);
+            Request requestPlugin = new Request(sr);
 
             
             // Wird nur beim ERSTEN Aufruf eine Form ausgegeben
-            if (RequestPlugin.Name == "")
+            if (requestPlugin.Name == "")
             {
                 // First Form
                 FirstForm FirstForm = new FirstForm();
@@ -144,10 +143,10 @@ namespace Server
             
 
             // Verhindert doppelte Ausgabe
-            if (RequestPlugin.Name != "favicon.ico" && RequestPlugin.Name != null)
+            if (requestPlugin.Name != "favicon.ico" && requestPlugin.Name != null)
             {
                 // start PluginManager
-                PluginManager PluginManager = new PluginManager(RequestPlugin.Name, RequestPlugin.Parameter, sw);
+                PluginManager PluginManager = new PluginManager(requestPlugin.Name, requestPlugin.Parameter, sw);
             }
 
             

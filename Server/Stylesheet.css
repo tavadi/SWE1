@@ -1,0 +1,23 @@
+﻿
+
+#container {
+    width:100%;
+}
+                            
+.line {
+    padding:10px;
+    width:100%;
+}
+
+.min20 {
+    width:20%;
+    float:left;
+    background-color:#D8D8D8;
+}
+
+.group {
+    visibility:hidden;
+    width:100%;
+    position:absolute;
+    padding-left:20%;
+}

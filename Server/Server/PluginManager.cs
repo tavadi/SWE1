@@ -12,58 +12,57 @@ namespace Server
     public class PluginManager
     {
         
-        private string _Name;
-        private string[] _Parameter;
+        private string _name;
+        private string[] _parameter;
 
         private StreamWriter _sw;
 
 
-
         // ##########################################################################################################################################
         // Konstruktor
-        public PluginManager(string PluginName)
+        public PluginManager(string pluginName)
         {
-            _Name = PluginName;
-            checkPlugin();
+            _name = pluginName;
+            CheckPlugin();
         }
 
-        
+/*
         // ##########################################################################################################################################
-        public PluginManager(string PluginName, string[] Parameter)
+        public PluginManager(string pluginName, string[] Parameter)
         {
-            _Name = PluginName;
-            _Parameter = Parameter;
+            _name = pluginName;
+            _parameter = Parameter;
 
             checkPlugin();
         }
-
+*/
 
         // ##########################################################################################################################################
-        public PluginManager(string PluginName, string[] Parameter, StreamWriter sw)
+        public PluginManager(string pluginName, string[] parameter, StreamWriter sw)
         {
-            _Name = PluginName;
-            _Parameter = Parameter;
+            _name = pluginName;
+            _parameter = parameter;
 
             _sw = sw;
-            checkPlugin();
+            CheckPlugin();
         }
 
 
 
 
         // ##########################################################################################################################################
-        public void checkPlugin()
+        public void CheckPlugin()
         {
             // Navigate to Path (DLL-Files from Plugins)
             string path = Environment.CurrentDirectory + "\\Plugins\\";
 
             // For each DLL-File
-            foreach (string Plugin in System.IO.Directory.GetFiles(path, "*.dll"))
+            foreach (string plugin in System.IO.Directory.GetFiles(path, "*.dll"))
             {
-                System.Reflection.Assembly myDllAssembly = System.Reflection.Assembly.LoadFile(Plugin);
+                System.Reflection.Assembly myDllAssembly = System.Reflection.Assembly.LoadFile(plugin);
 
                 //filter FILENAME without Extension
-                string filename = Path.GetFileNameWithoutExtension(Plugin);
+                string filename = Path.GetFileNameWithoutExtension(plugin);
                 //Console.WriteLine(result);
 
                 // Server.GetTemperatur
@@ -71,32 +70,54 @@ namespace Server
                 Type type = myDllAssembly.GetType("Server." + filename);
 
                 // Create Instance 
-                object StaticInstance = Activator.CreateInstance(type);
+                IPlugins staticInstance = Activator.CreateInstance(type) as IPlugins;
 
+                if (staticInstance == null)
+                {
+                    //ERROR
+                    continue;
+                }
+                
+                // TO-DO
+                // staticInstance. ...
+
+                /*
                 // Functions in each Plugin --> Interface
-                PropertyInfo PluginName = type.GetProperty("PluginName");
-                PropertyInfo isPlugin = type.GetProperty("isPlugin");
-                PropertyInfo Writer = type.GetProperty("Writer");
-                PropertyInfo doSomething = type.GetProperty("doSomething");
+                PropertyInfo pluginName = type.GetProperty("PluginName");
+                PropertyInfo isPlugin = type.GetProperty("IsPlugin");
+                PropertyInfo writer = type.GetProperty("Writer");
+                MethodInfo run = type.GetMethod("Run");
+                MethodInfo init = type.GetMethod("Init");
+                */
+
                 
-                
-                // Call function PluginName and return value
-                string value = (string)PluginName.GetValue(StaticInstance, null);
+                // Call function pluginName and return value
+                //string value = (string)pluginName.GetValue(staticInstance, null);
 
                 filename = filename + ".html";
-                // If filename is the same as PluginName in URL --> Set true
-                if (filename == _Name)
+                // If filename is the same as pluginName in URL --> Set true
+                if (filename == _name)
                 {
-                    isPlugin.SetValue(StaticInstance, true, null);
-                    Writer.SetValue(StaticInstance, _sw, null);
+                    //isPlugin.SetValue(staticInstance, true, null);
+                    //writer.SetValue(staticInstance, _sw, null);
+
+                    staticInstance.IsPlugin = true;
+                    staticInstance.Writer = _sw;
 
                     try
                     {
-                        doSomething.SetValue(StaticInstance, _Parameter, null);
+                        object[] param = { _parameter };
+
+                        //init.Invoke(staticInstance, param);
+                        //run.Invoke(staticInstance, null);
+                        
+                        staticInstance.Init(_parameter);
+                        staticInstance.Run();
                     }
-                    catch
+                    catch (Exception e)
                     {
-                        Console.WriteLine("ERROR: PluginManager - doSomething");
+                        //Console.WriteLine("ERROR: " + e);
+                        Console.WriteLine("ERROR: PluginManager - Run");
                     }
                 }
 
@@ -105,7 +126,6 @@ namespace Server
                 //Console.ForegroundColor = ConsoleColor.Yellow;
                 //Console.WriteLine((bool)isPlugin.GetValue(StaticInstance, null));
                 //Console.ForegroundColor = ConsoleColor.Green;
-
             }
         }  
     }
