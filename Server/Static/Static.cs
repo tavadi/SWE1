@@ -130,29 +130,35 @@ namespace Server
         // Files öffnen - Im Browser auf einen Link gedrückt
         private void OpenFiles()
         {
-
-            // Pfad am Server --> mit entsprechendem File
-            string path = Environment.CurrentDirectory + "\\Files\\" + _parameter[0];
-            
-
-            byte[] fileContent;
-            using (FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read))
+            try
             {
-                fileContent = new byte[fs.Length];
-                fs.Read(fileContent, 0, Convert.ToInt32(fs.Length));
+                // Pfad am Server --> mit entsprechendem File
+                string path = Environment.CurrentDirectory + "\\Files\\" + _parameter[0];
+
+
+                byte[] fileContent;
+                using (FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read))
+                {
+                    fileContent = new byte[fs.Length];
+                    fs.Read(fileContent, 0, Convert.ToInt32(fs.Length));
+                }
+
+
+                // Dateiendung für den MimeType bestimmen
+                string[] fileExtension = _parameter[0].Split('.');
+
+                // Entsprechenden MimeType auswählen
+                Extensions extension = new Extensions();
+                _resp.ContentType = extension.checkExtensions(fileExtension[1]);
+
+
+                // An den Browser schicken
+                _resp.SendMessage(_sw, fileContent, _parameter[0]);
             }
-
-
-            // Dateiendung für den MimeType bestimmen
-            string[] fileExtension = _parameter[0].Split('.');
-
-            // Entsprechenden MimeType auswählen
-            Extensions extension = new Extensions();
-            _resp.ContentType = extension.checkExtensions(fileExtension[1]);
-
-
-            // An den Browser schicken
-            _resp.SendMessage(_sw, fileContent, _parameter[0]);
+            catch (FileNotFoundException e)
+            {
+                throw new WrongParameterException("Static ", e);
+            }
         }
     }   
 }

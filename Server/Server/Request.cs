@@ -33,23 +33,19 @@ namespace Server
                 string[] url = line.Split(' ');
                 
                 // Method == GET
-                if (line.StartsWith("GET") && (url[1] != "/favicon.ico"))
+                if ((line.StartsWith("GET") && (url[1] != "/favicon.ico")) || (line.StartsWith("POST")))
                 {
-                    //string[] Header;
-                    
-                    _header = new List<string>();
                     _header.Add(url[0]);
                     _header.Add(url[1]);
-                    
                 }
-
+                /*
                 // Method == POST
                 else if (line.StartsWith("POST"))
                 {
                     _header.Add(url[0]);
                     _header.Add(url[1]);
                 }
-
+                */
                 // Content-Length muss für POST gespeichert werden
                 else if (line.StartsWith("Content-Length"))
                 {
@@ -66,7 +62,7 @@ namespace Server
                 // Method == GET
                 if (_header[0] == "GET")
                 {
-                    // Call Contructor with 1 Parameter
+                    // Call Constructor with 1 Parameter
                     Url url = new Url(_header[1]);
 
                     url.SplitUrlFirst("GET");

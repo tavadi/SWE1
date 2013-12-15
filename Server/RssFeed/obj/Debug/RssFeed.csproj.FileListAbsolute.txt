@@ -1,0 +1,7 @@
+C:\Users\Daniel\Documents\GitHub\SWE1\Server\RssFeed\bin\Debug\RssFeed.dll
+C:\Users\Daniel\Documents\GitHub\SWE1\Server\RssFeed\bin\Debug\RssFeed.pdb
+C:\Users\Daniel\Documents\GitHub\SWE1\Server\RssFeed\bin\Debug\Server.exe
+C:\Users\Daniel\Documents\GitHub\SWE1\Server\RssFeed\bin\Debug\Server.pdb
+C:\Users\Daniel\Documents\GitHub\SWE1\Server\RssFeed\obj\Debug\RssFeed.dll
+C:\Users\Daniel\Documents\GitHub\SWE1\Server\RssFeed\obj\Debug\RssFeed.pdb
+C:\Users\Daniel\Documents\GitHub\SWE1\Server\RssFeed\obj\Debug\RssFeed.csprojResolveAssemblyReference.cache

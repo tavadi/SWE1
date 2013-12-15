@@ -13,6 +13,7 @@ namespace Server
         private LogFile _logFile;
 
         private string _contentType;
+        private bool _status = true;
         private string _filename;
 
         private int _size;
@@ -93,14 +94,27 @@ namespace Server
             }
         }
 
+        // ##########################################################################################################################################
+        public bool Status
+        {
+            set
+            {
+                _status = value;
+            }
+        }
+
 
 
         // ##########################################################################################################################################
         private void SendHttpHeader()
         {
-            _sw.WriteLine("HTTP/1.1 200 OK");
-            _sw.WriteLine("Server: Apache/1.3.29 (Unix) PHP/4.3.4");
-            _sw.WriteLine("Content-Type: " + _contentType + "; charset=UTF-8");
+            if (_status == true)
+                _sw.WriteLine("HTTP/1.1 200 OK");
+            else if (_status == false)
+                _sw.WriteLine("HTTP/1.1 404 Not Found");
+
+            _sw.WriteLine("Server: localhost:8080 (Unix) PHP/4.3.4");
+            _sw.WriteLine("Content-Type: " + _contentType + "; charset=UTF-8");         // charset = Umlaute im Browser
             _sw.WriteLine("Content-Length: " + _size);
             _sw.WriteLine("Content-Language: de");
 

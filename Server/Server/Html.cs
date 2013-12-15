@@ -76,6 +76,10 @@ namespace Server
                                 padding-left:20%;
                             }
 
+                            .feedContainer {
+                                margin-top:5%;
+                            }
+
                         </style>
 
 

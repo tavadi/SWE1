@@ -124,13 +124,14 @@ namespace Server
                     <input type='text' name='year' value='2013' />
                     </br>
                     <label>Month</label>
-                    <input type='text' name='month' value='10' />
+                    <input type='text' name='month' value='12' />
                     </br>
                     <label>Day</label>
-                    <input type='text' name='day' value='25' />
+                    <input type='text' name='day' value='13' />
                     </br>
                     <label>max. Eintr&auml;ge pro Seite</label>
                     <input type='text' name='max' value='30' />
+                    <label>min: 10; max: 100</label>
                     </br>
                     <input type='submit' value='Submit' />
                 </form>
@@ -174,6 +175,10 @@ namespace Server
             _year = Convert.ToUInt32(_parameter[0]);
             _month = Convert.ToUInt32(_parameter[1]);
             _day = Convert.ToUInt32(_parameter[2]);
+            _max = 10;
+
+            // Check Parameter
+            checkParameter();
 
             // XML-File erstellen
             XmlCreator XML = new XmlCreator();
@@ -189,27 +194,61 @@ namespace Server
         {
             int a = 0;
 
-            // Parameter und Werte suchen
-            for (int i = 0; i < _parameter.Length; i++)
+            try
             {
-                a = i;
-                if (_parameter[i] == "year")
+            // Parameter und Werte suchen
+                for (int i = 0; i < _parameter.Length; i++)
                 {
-                    _year = Convert.ToUInt32(_parameter[a + 1]);
+                    a = i;
+                    if (_parameter[i] == "year")
+                    {
+                        _year = Convert.ToUInt32(_parameter[a + 1]);
+                    }
+                    else if (_parameter[i] == "month")
+                    {
+                        _month = Convert.ToUInt32(_parameter[a + 1]);
+                    }
+                    else if (_parameter[i] == "day")
+                    {
+                        _day = Convert.ToUInt32(_parameter[a + 1]);
+                    }
+                    else if (_parameter[i] == "max")
+                    {
+                        _max = Convert.ToUInt32(_parameter[a + 1]);
+                    }
                 }
-                else if (_parameter[i] == "month")
-                {
-                    _month = Convert.ToUInt32(_parameter[a + 1]);
-                }
-                else if (_parameter[i] == "day")
-                {
-                    _day = Convert.ToUInt32(_parameter[a + 1]);
-                }
-                else if (_parameter[i] == "max")
-                {
-                    _max = Convert.ToUInt32(_parameter[a + 1]);
-                }
+
+                // Check Parameter
+                checkParameter();
+
             }
+            catch (FormatException e)
+            {
+                throw new WrongParameterException("TemperaturPlugin ", e);
+            }
+        }
+
+
+        // ##########################################################################################################################################
+        private void checkParameter()
+        {
+            if (_year.ToString().Length != 4)
+            {
+                throw new WrongParameterException("TemperaturPlugin");
+            }
+            else if ((_day <= 0) || (_day > 31))
+            {
+                throw new WrongParameterException("TemperaturPlugin");
+            }
+            else if ((_month <= 0) || (_month > 12))
+            {
+                throw new WrongParameterException("TemperaturPlugin");
+            }
+            else if ((_max < 10) || (_max > 100))
+            {
+                throw new WrongParameterException("TemperaturPlugin");
+            }
+
         }
 
 

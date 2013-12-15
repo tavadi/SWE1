@@ -100,24 +100,32 @@ namespace Server
                 thread.Start();
             }
 
+            // Falls das Plugin ohne Parameter aufgerufen wird
             else if (_parameter[0] == _pluginName)
             {
                 DisplayForm();
             }
 
+            // Plugin soll das OSM (XML) - File erneut einlesen und ins Dictionary speichern
             else if (_parameter[0] == "Preparing")
             {
                 PrepareXMLFile();
             }
 
+            // Es wird eine Inputform für den Straßennamen ausgegeben
             else if (_parameter[0] == "Navigation")
             {
                 DisplayInputForm();
             }
 
+            // Es wurde ein Straßennamen eingegeben und dieser soll im Dictionary gesucht werden
             else if (_parameter[0] == "street")
             {
                 PrepareAnswer();
+            }
+            else
+            {
+                throw new WrongParameterException("Navi  ");
             }
 
 
@@ -141,7 +149,7 @@ namespace Server
 
 
             // Pfad am Server --> gesamter Inhalt wird ausgegeben
-            string path = "C:\\Ress\\antarctica-latest.osm";
+            string path = "C:\\Ress\\austria-latest.osm";
             Console.WriteLine(path);
 
             //counter = CountLines(path);
@@ -186,18 +194,11 @@ namespace Server
         private void DisplayForm()
         {
             _response =
-               @"
-                <html>
-                    <head> 
-                        <title>SensorCloud</title> 
-                    </head> 
-                    <body>
-                        <button><a href='Navi.html?Preparing'>Stra&szlig;enkarte neu aufbereiten</a></button>
-                        <br />
-                        <button><a href='Navi.html?Navigation'>Stra&szlig;en <--> Orte</a></button>
-                    </body> 
-                </html>";
-
+                @"
+                    <button><a href='Navi.html?Preparing'>Stra&szlig;enkarte neu aufbereiten</a></button>
+                    <br />
+                    <button><a href='Navi.html?Navigation'>Stra&szlig;en <--> Orte</a></button>
+                ";
             _resp.SendMessage(_sw, _response);
 
         }

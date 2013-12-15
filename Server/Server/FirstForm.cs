@@ -14,18 +14,14 @@ namespace Server
         {
             string msg =
                @"
-                <html>
-                    <head> 
-                        <title>SensorCloud</title> 
-                    </head> 
-                    <body>
-                        <button><a href='GetTemperatur.html'>Plugin Temperatur</a></button>
-                        <br />
-                        <button><a href='Static.html'>Plugin Static</a></button>
-                        <br />
-                        <button><a href='Navi.html'>Plugin Navi</a></button>
-                    </body> 
-                </html>";
+                    <button><a href='GetTemperatur.html'>Plugin Temperatur</a></button>
+                    <br />
+                    <button><a href='Static.html'>Plugin Static</a></button>
+                    <br />
+                    <button><a href='Navi.html'>Plugin Navi</a></button>
+                    <br />
+                    <button><a href='RssFeed.html'>Plugin RSS-Feed</a></button>
+                ";
 
             int size = msg.Length;
 

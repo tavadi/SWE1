@@ -15,7 +15,10 @@ namespace Server
         private string _name;
         private string[] _parameter;
 
+        private bool _pluginExists = false;
+
         private StreamWriter _sw;
+        private Response _resp = new Response();
 
 
         // ##########################################################################################################################################
@@ -56,6 +59,7 @@ namespace Server
             // Navigate to Path (DLL-Files from Plugins)
             string path = Environment.CurrentDirectory + "\\Plugins\\";
 
+
             // For each DLL-File
             foreach (string plugin in System.IO.Directory.GetFiles(path, "*.dll"))
             {
@@ -72,60 +76,81 @@ namespace Server
                 // Create Instance 
                 IPlugins staticInstance = Activator.CreateInstance(type) as IPlugins;
 
+                
                 if (staticInstance == null)
                 {
-                    //ERROR
                     continue;
                 }
                 
-                // TO-DO
-                // staticInstance. ...
 
-                /*
-                // Functions in each Plugin --> Interface
-                PropertyInfo pluginName = type.GetProperty("PluginName");
-                PropertyInfo isPlugin = type.GetProperty("IsPlugin");
-                PropertyInfo writer = type.GetProperty("Writer");
-                MethodInfo run = type.GetMethod("Run");
-                MethodInfo init = type.GetMethod("Init");
-                */
-
-                
                 // Call function pluginName and return value
                 //string value = (string)pluginName.GetValue(staticInstance, null);
 
-                filename = filename + ".html";
-                // If filename is the same as pluginName in URL --> Set true
-                if (filename == _name)
+                // Startseiete
+                if (_name == "")
                 {
-                    //isPlugin.SetValue(staticInstance, true, null);
-                    //writer.SetValue(staticInstance, _sw, null);
-
-                    staticInstance.IsPlugin = true;
-                    staticInstance.Writer = _sw;
-
-                    try
+                    _pluginExists = true;
+                }
+                else
+                {
+                    filename = filename + ".html";
+                    // If filename is the same as pluginName in URL --> Set true
+                    if (filename == _name)
                     {
-                        object[] param = { _parameter };
+                        _pluginExists = true;
 
-                        //init.Invoke(staticInstance, param);
-                        //run.Invoke(staticInstance, null);
-                        
-                        staticInstance.Init(_parameter);
-                        staticInstance.Run();
-                    }
-                    catch (Exception e)
-                    {
-                        //Console.WriteLine("ERROR: " + e);
-                        Console.WriteLine("ERROR: PluginManager - Run");
+                        //isPlugin.SetValue(staticInstance, true, null);
+                        //writer.SetValue(staticInstance, _sw, null);
+
+                        staticInstance.IsPlugin = true;
+                        staticInstance.Writer = _sw;
+
+                        try
+                        {
+                            object[] param = { _parameter };
+
+                            //init.Invoke(staticInstance, param);
+                            //run.Invoke(staticInstance, null);
+
+                            staticInstance.Init(_parameter);
+                            staticInstance.Run();
+                        }
+
+                        catch (WrongParameterException e)
+                        {
+                            Console.WriteLine("Falscher Parameter: 404 Error");
+
+                            // 404 ErrorPage
+                            _resp.ContentType = "text/html";
+                            _resp.Status = false;
+                            _resp.SendMessage(_sw, "Bitte &uuml;berpr&uuml;fen Sie Ihre Paramter.");
+
+                            if (e.InnerException != null)
+                            {
+                                Console.WriteLine(e.InnerException.StackTrace);
+                            }
+                        }
+
+                        catch (Exception e)
+                        {
+                            //Console.WriteLine("ERROR: " + e);
+                            _resp.ContentType = "text/html";
+                            _resp.Status = false;
+                            _resp.SendMessage(_sw, "Error PluginManager - " + e);
+                        }
                     }
                 }
-
 
                 // Write true or false
                 //Console.ForegroundColor = ConsoleColor.Yellow;
                 //Console.WriteLine((bool)isPlugin.GetValue(StaticInstance, null));
                 //Console.ForegroundColor = ConsoleColor.Green;
+            }
+
+            if (_pluginExists == false)
+            {
+                _resp.ContentType = "text/html";
+                _resp.SendMessage(_sw, "Error PluginManager - Ihr ausgew&auml;hltes Plugin ist derzeit nicht verf&uuml;gbar. Bitte probieren Sie es sp&auml;ter erneut");
             }
         }  
     }
