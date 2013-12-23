@@ -11,3 +11,5 @@ C:\Users\Daniel\Documents\GitHub\SWE1\Server\ServerTest\bin\Debug\Static.pdb
 C:\Users\Daniel\Documents\GitHub\SWE1\Server\ServerTest\obj\Debug\ServerTest.csprojResolveAssemblyReference.cache
 C:\Users\Daniel\Documents\GitHub\SWE1\Server\ServerTest\obj\Debug\ServerTest.dll
 C:\Users\Daniel\Documents\GitHub\SWE1\Server\ServerTest\obj\Debug\ServerTest.pdb
+C:\Users\Daniel\Documents\GitHub\SWE1\Server\ServerTest\bin\Debug\RssFeed.dll
+C:\Users\Daniel\Documents\GitHub\SWE1\Server\ServerTest\bin\Debug\RssFeed.pdb

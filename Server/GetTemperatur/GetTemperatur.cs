@@ -26,7 +26,7 @@ namespace Server
 
         private StreamWriter _sw;
         private Response _resp = new Response();
-
+        private DBHandler _dbHandler = new DBHandler();
 
         // ##########################################################################################################################################
         // StreamWriter
@@ -259,10 +259,9 @@ namespace Server
             //              Database:   SEW_Temperatur
             //              Uuser:      local
 
-            using (SqlConnection db = new SqlConnection(
-                @"Data Source=.\SqlExpress;
-                Initial Catalog=SWE_Temperatur;
-	            Integrated Security=true;"))
+            SqlConnection db = _dbHandler.Connection;
+
+            using (db)
             {
                 db.Open();
 
@@ -341,6 +340,28 @@ namespace Server
         public uint Max
         {
             get { return _max; }
+        }
+
+
+
+        // ##########################################################################################################################################
+        // Database Connection
+        // ##########################################################################################################################################
+        public string Username
+        {
+            get { return _dbHandler.Username; }
+        }
+
+        // ##########################################################################################################################################
+        public string Database
+        {
+            get { return _dbHandler.Database; }
+        }
+
+        // ##########################################################################################################################################
+        public string Security
+        {
+            get { return _dbHandler.Security; }
         }
 
     }

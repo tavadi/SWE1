@@ -18,6 +18,7 @@ namespace Server
         private string[] _parameter;
         private string _response;
 
+        private string[] _fileExtension;
 
         private StreamWriter _sw;
 
@@ -122,7 +123,7 @@ namespace Server
 
             // An den Browser senden
             _resp.ContentType = "text/html";
-            _resp.SendMessage(_sw, _response);  
+            _resp.SendMessage(_sw, _response);
         }
 
 
@@ -143,13 +144,12 @@ namespace Server
                     fs.Read(fileContent, 0, Convert.ToInt32(fs.Length));
                 }
 
-
-                // Dateiendung für den MimeType bestimmen
-                string[] fileExtension = _parameter[0].Split('.');
+                // Dateiname und Endung aufsplitten
+                Split();
 
                 // Entsprechenden MimeType auswählen
                 Extensions extension = new Extensions();
-                _resp.ContentType = extension.checkExtensions(fileExtension[1]);
+                _resp.ContentType = extension.checkExtensions(_fileExtension[1]);
 
 
                 // An den Browser schicken
@@ -160,7 +160,21 @@ namespace Server
                 throw new WrongParameterException("Static ", e);
             }
         }
-    }   
+
+
+        public void Split()
+        {
+            // Dateiendung für den MimeType bestimmen
+            _fileExtension = _parameter[0].Split('.');
+        }
+
+
+        // ##########################################################################################################################################
+        public string FileExtension
+        {
+            get { return _fileExtension[1]; }
+        }
+    }
 }
 
 

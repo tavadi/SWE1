@@ -39,6 +39,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DBHandler.cs" />
     <Compile Include="XmlCreator.cs" />
     <Compile Include="GetTemperatur.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

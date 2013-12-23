@@ -125,7 +125,7 @@ namespace Server
             }
             else
             {
-                throw new WrongParameterException("Navi  ");
+                throw new WrongParameterException("Navi ");
             }
 
 
@@ -346,19 +346,9 @@ namespace Server
         }
 
 
-
-        /*
-        private static int CountLines(string fileToCount)
+        public string Param
         {
-            int counter = 0;
-            using (StreamReader countReader = new StreamReader(fileToCount))
-            {
-                while (countReader.ReadLine() != null)
-                    counter++;
-            }
-            return counter;
+            get { return _parameter[0]; }
         }
-        */
-
     }
 }

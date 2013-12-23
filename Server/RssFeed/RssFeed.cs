@@ -20,10 +20,14 @@ namespace Server
         private string[] _parameter;
         private string _response;
 
+        private string _name;
+        private string _url;
+
         private StreamWriter _sw;
         private Response _resp = new Response();
 
-        private SqlConnection _db;
+        private DBHandler _dbHandler = new DBHandler();
+        SqlConnection _db;
 
 
         // ##########################################################################################################################################
@@ -78,10 +82,7 @@ namespace Server
         {
             _parameter = parameter;
 
-            // Database
-            string[] dbData = new string[] {".\\SqlExpress", "SWE_Temperatur", "true"};
-            
-            _db = new SqlConnection(@"Data Source=" + dbData[0] + "; Initial Catalog=" + dbData[1] + "; Integrated Security=" + dbData[2] + ";");
+            _db = _dbHandler.Connection;
         }
 
 
@@ -108,6 +109,11 @@ namespace Server
                 EditSave();
             }
 
+            else if (_parameter[0] == "EditUpdate")
+            {
+                //UpdateSave();
+            }
+
             else if (_parameter[0] == "EditDelete")
             {
                 EditDelete();
@@ -116,6 +122,11 @@ namespace Server
             else if (_parameter[0] == "Feed")
             {
                 DisplayFeed();
+            }
+
+            else
+            {
+                throw new WrongParameterException("RssFeed");
             }
         }
 
@@ -139,12 +150,12 @@ namespace Server
         private void DisplayFeed()
         {                
             string path = null;
-                
+
             using (_db)
             {
                 _db.Open();
 
-                // 
+                
                 SqlCommand cmd = new SqlCommand("SELECT [RSSFEED].[NAME], [RSSFEED].[FEED] FROM [RSSFEED]", _db);
 
                 using (SqlDataReader rd = cmd.ExecuteReader())
@@ -236,7 +247,7 @@ namespace Server
                     _response += @"
                         </select>
                         </br>
-                        <input type='submit' value='Submit' />
+                        <input type='submit' value='Anzeigen' />
                     </form>
                     ";
                 }
@@ -267,12 +278,41 @@ namespace Server
 
 
 
-            // DELETE
+            // UPDATE
             using (_db)
             {
                 _db.Open();
 
                 SqlCommand cmd = new SqlCommand("SELECT [RSSFEED].[NAME], [RSSFEED].[FEED] FROM [RSSFEED]", _db);
+
+                using (SqlDataReader rd = cmd.ExecuteReader())
+                {
+                    _response += @"
+                    <div id='RssFeedUpdate' class='feedContainer'>
+                        <h2>Update</h2>
+                        <form method='POST' action='RssFeed.html?EditUpdate'>
+                            <label>RSS-Feed-Link</label>
+                    
+                            <select name='EditUpdate'>";
+
+                    while (rd.Read())
+                    {
+                        _response += "<option>" + rd.GetString(0) + "</option>";
+                    }
+
+                    _response += @"
+                            </select>
+                            </br>
+                            <input type='submit' value='Update' />
+                        </form>
+                    </div>
+                    ";
+                }
+
+
+
+                // DELETE
+                cmd = new SqlCommand("SELECT [RSSFEED].[NAME], [RSSFEED].[FEED] FROM [RSSFEED]", _db);
 
                 using (SqlDataReader rd = cmd.ExecuteReader())
                 {
@@ -299,6 +339,8 @@ namespace Server
                 }
             }
 
+
+            
             _resp.ContentType = "text/html";
             _resp.SendMessage(_sw, _response);
         }
@@ -307,11 +349,13 @@ namespace Server
         // ##########################################################################################################################################
         private void EditSave()
         {
+            ParseParameters();
+
             using (_db)
             {
                 _db.Open();
 
-                SqlCommand insert = new SqlCommand(@"INSERT INTO [RSSFEED] ([NAME], [FEED], [TIMESTAMP]) VALUES ('" + _parameter[1] + "', '" + HttpUtility.UrlDecode(_parameter[3]) + "', getdate())", _db);
+                SqlCommand insert = new SqlCommand(@"INSERT INTO [RSSFEED] ([NAME], [FEED], [TIMESTAMP]) VALUES ('" + _name + "', '" + HttpUtility.UrlDecode(_url) + "', getdate())", _db);
                 insert.ExecuteNonQuery();
 
                 _db.Close();
@@ -323,6 +367,33 @@ namespace Server
             _resp.SendMessage(_sw, _response);
         }
 
+
+        // ##########################################################################################################################################
+        public void ParseParameters()
+        {
+            int a = 0;
+
+            try
+            {
+                // Parameter und Werte suchen
+                for (int i = 0; i < _parameter.Length; i++)
+                {
+                    a = i;
+                    if (_parameter[i] == "EditSave")
+                    {
+                        _name = _parameter[a + 1];
+                    }
+                    else if (_parameter[i] == "FeedUrl")
+                    {
+                        _url = _parameter[a + 1];
+                    }
+                }
+            }
+            catch (FormatException e)
+            {
+                throw new WrongParameterException("RssFeed ", e);
+            }
+        }
 
         // ##########################################################################################################################################
         private void EditDelete()
@@ -341,6 +412,43 @@ namespace Server
 
             _resp.ContentType = "text/html";
             _resp.SendMessage(_sw, _response);
+        }
+
+
+
+        // ##########################################################################################################################################
+        public string Name
+        {
+            get { return _name; }
+        }
+
+        // ##########################################################################################################################################
+        public string Url
+        {
+            get { return _url; }
+        }
+
+
+
+
+        // ##########################################################################################################################################
+        // Database Connection
+        // ##########################################################################################################################################
+        public string Username
+        {
+            get { return _dbHandler.Username; }
+        }
+
+        // ##########################################################################################################################################
+        public string Database
+        {
+            get { return _dbHandler.Database; }
+        }
+
+        // ##########################################################################################################################################
+        public string Security
+        {
+            get { return _dbHandler.Security; }
         }
     }
 }

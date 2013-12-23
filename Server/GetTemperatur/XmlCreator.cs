@@ -11,6 +11,8 @@ namespace Server
 {
     class XmlCreator
     {
+        private DBHandler _dbHandler = new DBHandler();
+
 
         // ##########################################################################################################################################
         public string Create(uint year, uint month, uint day)
@@ -22,13 +24,11 @@ namespace Server
                         <PluginTemperatur>
                             <title>Plugin Temperatur</title>
                     ";
-    
 
 
-            using (SqlConnection db = new SqlConnection(
-                @"Data Source=.\SqlExpress;
-                Initial Catalog=SWE_Temperatur;
-	            Integrated Security=true;"))
+            SqlConnection db = _dbHandler.Connection;
+
+            using (db)
             {
                 db.Open();
                 SqlCommand cmd = new SqlCommand(@"  SELECT [MESSDATEN].[DATE], [MESSDATEN].[TEMPERATUR] 
