@@ -101,13 +101,13 @@ namespace Server
                                 $( '#group' + 1 ).css( 'visibility', 'visible' );
 
 
-                                for (var i = 1; i <= groups; i++)
+                                for (var i = 1; i <= groups; ++i)
                                 {
                                     $('#navigation').append('<a href=""#"" id=' + i + ' onClick=""javascript:show_data(this.id)"">' + ' ' + i + ' ' + '</a>');
                                 }
 
                                 /*
-                                for (var i = 1; i <= groups; i++)
+                                for (var i = 1; i <= groups; ++i)
                                 {
                                     $( '#grouplink' + i ).click(function() {
 
@@ -119,7 +119,7 @@ namespace Server
 
                             function show_data(id)
                             {
-                                for (var i = 1; i <= groups; i++)
+                                for (var i = 1; i <= groups; ++i)
                                 {
                                     $( '#group' + i ).css( 'visibility', 'hidden' );
                                 }

@@ -197,7 +197,7 @@ namespace Server
             try
             {
             // Parameter und Werte suchen
-                for (int i = 0; i < _parameter.Length; i++)
+                for (int i = 0; i < _parameter.Length; ++i)
                 {
                     a = i;
                     if (_parameter[i] == "year")

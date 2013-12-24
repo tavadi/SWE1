@@ -240,6 +240,8 @@ namespace Server
         // ##########################################################################################################################################
         private void PrepareAnswer()
         {
+            bool exists = false;
+
             if (_isPreparing == false)
             {
                 string decodedParameter = _parameter[1].Replace("+", " ");
@@ -252,9 +254,11 @@ namespace Server
                     {
                         if (kvp.Key == decodedParam)
                         {
+                            exists = true;
+
                             int size = kvp.Value.Count;
 
-                            for (int i = 0; i < size; i++)
+                            for (int i = 0; i < size; ++i)
                             {
                                 _response += kvp.Value[i];
                                 _response += "<br />";
@@ -266,6 +270,12 @@ namespace Server
                         _response = "Kein Eintrag vorhanden";
                     }
                 }
+
+                if (exists == false)
+                {
+                    throw new WrongParameterException("Navi ");
+                }
+
             }
             else
             {

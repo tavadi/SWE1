@@ -13,13 +13,14 @@ using Server;
 namespace Server
 {
     public class RssFeed : IPlugins
-    {        
-        
+    {
+
         private string _pluginName = "RssFeed.html";
         private bool _isPlugin = false;
         private string[] _parameter;
         private string _response;
 
+        private decimal _id;
         private string _name;
         private string _url;
 
@@ -27,7 +28,7 @@ namespace Server
         private Response _resp = new Response();
 
         private DBHandler _dbHandler = new DBHandler();
-        SqlConnection _db;
+        private SqlConnection _db;
 
 
         // ##########################################################################################################################################
@@ -111,7 +112,7 @@ namespace Server
 
             else if (_parameter[0] == "EditUpdate")
             {
-                //UpdateSave();
+                EditUpdate();
             }
 
             else if (_parameter[0] == "EditDelete")
@@ -121,42 +122,43 @@ namespace Server
 
             else if (_parameter[0] == "Feed")
             {
-                DisplayFeed();
+                string path = PrepareUrl();
+                DisplayFeed(path);
             }
 
             else
             {
                 throw new WrongParameterException("RssFeed");
             }
+
+
+            _resp.ContentType = "text/html";
+            _resp.SendMessage(_sw, _response);
         }
 
 
-
         // ##########################################################################################################################################
-        private void DisplayForm()
+        public void DisplayForm()
         {
             _response += @"
                 <button><a href='RssFeed.html?Show'>Rss-Feed ausgeben</a></button>
                 <br />
                 <button><a href='RssFeed.html?Edit'>Rss-Feed bearbeiten</a></button>
             ";
-
-            _resp.ContentType = "text/html";
-            _resp.SendMessage(_sw, _response);
-
         }
 
+
         // ##########################################################################################################################################
-        private void DisplayFeed()
+        private string PrepareUrl()
         {                
             string path = null;
 
+            // URL zum passenden FeedNamen herausfiltern
             using (_db)
             {
                 _db.Open();
 
-                
-                SqlCommand cmd = new SqlCommand("SELECT [RSSFEED].[NAME], [RSSFEED].[FEED] FROM [RSSFEED]", _db);
+                SqlCommand cmd = new SqlCommand("SELECT [RSSFEED].[NAME], [RSSFEED].[FEED] FROM [RSSFEED] WHERE [RSSFEED].[NAME] = '" + _parameter[1] + "'", _db);
 
                 using (SqlDataReader rd = cmd.ExecuteReader())
                 {
@@ -170,55 +172,67 @@ namespace Server
                 }
             }
 
+            return path;
+        }
+
+
+        // ##########################################################################################################################################
+        private void DisplayFeed(string path)
+        {
             XmlTextReader reader = new XmlTextReader(path);
 
             string type = null;
             string[] _rss = new string[4];
 
-            while (reader.Read())
+            try
             {
-                switch (reader.NodeType)
+                while (reader.Read())
                 {
-                    case XmlNodeType.Element:
-                        type = reader.Name;
-                        break;
+                    switch (reader.NodeType)
+                    {
+                        case XmlNodeType.Element:
+                            type = reader.Name;
+                            break;
 
-                    case XmlNodeType.Text:
+                        case XmlNodeType.Text:
 
-                        if (type == "title")
-                        {
-                            _rss[0] = reader.Value;
-                        }
-                        else if (type == "link")
-                        {
-                            _rss[1] = reader.Value;
-                        }
-                        else if (type == "description")
-                        {
-                            _rss[2] = reader.Value;
-                        }
-                        else if (type == "pubDate")
-                        {
-                            _rss[3] = reader.Value;
-                        }
-                        break;
+                            if (type == "title")
+                            {
+                                _rss[0] = reader.Value;
+                            }
+                            else if (type == "link")
+                            {
+                                _rss[1] = reader.Value;
+                            }
+                            else if (type == "description")
+                            {
+                                _rss[2] = reader.Value;
+                            }
+                            else if (type == "pubDate")
+                            {
+                                _rss[3] = reader.Value;
+                            }
+                            break;
 
-                    case XmlNodeType.EndElement:
-                        if (reader.Name == "item")
-                        {
-                            _response += "<a href='" + _rss[1] + "'>" + _rss[0] + "</a>";
-                            _response += "<br />";
-                            _response += _rss[3];
-                            _response += "<br />";
-                            _response += _rss[2]; 
-                            _response += "<br />";
-                            _response += "<br />";
-                        }
-                        break;
+                        case XmlNodeType.EndElement:
+                            if (reader.Name == "item")
+                            {
+                                _response += "<a href='" + _rss[1] + "'>" + _rss[0] + "</a>";
+                                _response += "<br />";
+                                _response += _rss[3];
+                                _response += "<br />";
+                                _response += _rss[2];
+                                _response += "<br />";
+                                _response += "<br />";
+                            }
+                            break;
+                    }
                 }
             }
-            _resp.ContentType = "text/html";
-            _resp.SendMessage(_sw, _response);
+            catch (FileNotFoundException e)
+            {
+                throw new WrongFilenameException("RssFeed", e);
+            }
         }
 
 
@@ -252,9 +266,6 @@ namespace Server
                     ";
                 }
             }
-
-            _resp.ContentType = "text/html";
-            _resp.SendMessage(_sw, _response);
         }
 
 
@@ -266,8 +277,9 @@ namespace Server
                 <div id='RssFeedSave' class='feedContainer'>
                     <h2>Add</h2>
                     <form method='POST' action='RssFeed.html?EditSave'>
+                        <input type='text' name='EditSave' value='0' style='display:none;'/>
                         <label>Feedname</label>
-                        <input type='text' name='EditSave' value='' />
+                        <input type='text' name='FeedName' value='' size='50' />
                         <label>URL</label>
                         <input type='text' name='FeedUrl' value='' size='100' />
                         </br>
@@ -278,41 +290,12 @@ namespace Server
 
 
 
-            // UPDATE
             using (_db)
             {
                 _db.Open();
 
-                SqlCommand cmd = new SqlCommand("SELECT [RSSFEED].[NAME], [RSSFEED].[FEED] FROM [RSSFEED]", _db);
-
-                using (SqlDataReader rd = cmd.ExecuteReader())
-                {
-                    _response += @"
-                    <div id='RssFeedUpdate' class='feedContainer'>
-                        <h2>Update</h2>
-                        <form method='POST' action='RssFeed.html?EditUpdate'>
-                            <label>RSS-Feed-Link</label>
-                    
-                            <select name='EditUpdate'>";
-
-                    while (rd.Read())
-                    {
-                        _response += "<option>" + rd.GetString(0) + "</option>";
-                    }
-
-                    _response += @"
-                            </select>
-                            </br>
-                            <input type='submit' value='Update' />
-                        </form>
-                    </div>
-                    ";
-                }
-
-
-
                 // DELETE
-                cmd = new SqlCommand("SELECT [RSSFEED].[NAME], [RSSFEED].[FEED] FROM [RSSFEED]", _db);
+                SqlCommand cmd = new SqlCommand("SELECT [RSSFEED].[ID], [RSSFEED].[NAME] FROM [RSSFEED]", _db);
 
                 using (SqlDataReader rd = cmd.ExecuteReader())
                 {
@@ -325,8 +308,8 @@ namespace Server
                             <select name='EditDelete'>";
 
                         while (rd.Read())
-                        {
-                            _response += "<option>" + rd.GetString(0) + "</option>";
+                        {                                 
+                            _response += "<option>" + rd.GetString(1) + "</option>";
                         }
 
                         _response += @"
@@ -337,12 +320,35 @@ namespace Server
                     </div>
                     ";
                 }
+
+
+                // UPDATE
+                cmd = new SqlCommand("SELECT [RSSFEED].[ID], [RSSFEED].[NAME], [RSSFEED].[FEED] FROM [RSSFEED]", _db);
+
+                using (SqlDataReader rd = cmd.ExecuteReader())
+                {
+                    _response += @"
+                        <div id='RssFeedUpdate' class='feedContainer'>
+                            <h2>Update</h2>";
+
+                    while (rd.Read())
+                    {                      
+                         _response += @"
+                             <form method='POST' action='RssFeed.html?EditUpdate'>
+                                 <label>RSS-Feed-Link</label>
+                                 <input type='text' name='EditUpdate' value='" + rd.GetDecimal(0).ToString() + @"' />
+                                 <input type='text' name='FeedName' value='" + rd.GetString(1) + @"' size='50' />
+                                 <input type='text' name='FeedUrl' value='" + rd.GetString(2) + @"' size='100' />
+                                 <input type='submit' value='Save' />
+                             </form>";
+                         
+                    }
+                    _response += @"
+                                </br>
+                        </div>
+                        ";
+                }
             }
-
-
-            
-            _resp.ContentType = "text/html";
-            _resp.SendMessage(_sw, _response);
         }
 
 
@@ -362,38 +368,30 @@ namespace Server
             }
 
             _response = "Eintrag wurde gespeichert";
-
-            _resp.ContentType = "text/html";
-            _resp.SendMessage(_sw, _response);
         }
 
 
         // ##########################################################################################################################################
-        public void ParseParameters()
+        private void EditUpdate()
         {
-            int a = 0;
+            ParseParameters();
 
-            try
+            
+            using (_db)
             {
-                // Parameter und Werte suchen
-                for (int i = 0; i < _parameter.Length; i++)
-                {
-                    a = i;
-                    if (_parameter[i] == "EditSave")
-                    {
-                        _name = _parameter[a + 1];
-                    }
-                    else if (_parameter[i] == "FeedUrl")
-                    {
-                        _url = _parameter[a + 1];
-                    }
-                }
+                _db.Open();
+
+                SqlCommand insert = new SqlCommand( @"UPDATE [RSSFEED] 
+                                                        SET [NAME] = '" + _name + "', [FEED] = '" + HttpUtility.UrlDecode(_url) + @"', [TIMESTAMP] = getdate()
+                                                        WHERE [ID] = " + _id + "", _db);
+                insert.ExecuteNonQuery();
+
+                _db.Close();
             }
-            catch (FormatException e)
-            {
-                throw new WrongParameterException("RssFeed ", e);
-            }
+
+            _response = "Eintrag wurde ge&auml;ndert";
         }
+
 
         // ##########################################################################################################################################
         private void EditDelete()
@@ -409,12 +407,55 @@ namespace Server
             }
 
             _response = "Eintrag wurde gel&ouml;scht";
-
-            _resp.ContentType = "text/html";
-            _resp.SendMessage(_sw, _response);
         }
 
 
+        // ##########################################################################################################################################
+        public void ParseParameters()
+        {
+            int a = 0;
+
+            try
+            {
+                // Parameter und Werte suchen
+                for (int i = 0; i < _parameter.Length; ++i)
+                {
+                    a = i;
+
+                    if ((_parameter[i] == "EditSave") || (_parameter[i] == "EditUpdate"))
+                    {
+                        _id = Convert.ToDecimal(_parameter[a + 1]);
+                    }
+
+                    else if (_parameter[i] == "FeedName")
+                    {
+                        _name = _parameter[a + 1];
+                    }
+
+                    else if (_parameter[i] == "FeedUrl")
+                    {
+                        _url = _parameter[a + 1];
+                    }
+                }
+            }
+            catch (FormatException e)
+            {
+                throw new WrongParameterException("RssFeed ", e);
+            }
+
+            if ((_name == "") || (_url == ""))
+            {
+                throw new WrongParameterException("RssFeed: ");
+            }
+        }
+
+
+
+        // ##########################################################################################################################################
+        public decimal ID
+        {
+            get { return _id; }
+        }
 
         // ##########################################################################################################################################
         public string Name

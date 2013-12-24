@@ -131,6 +131,22 @@ namespace Server
                             }
                         }
 
+                        catch (WrongFilenameException e)
+                        {
+                            Console.WriteLine("Falscher Parameter: 404 Error");
+
+                            // 404 ErrorPage
+                            _resp.ContentType = "text/html";
+                            _resp.Status = false;
+                            _resp.SendMessage(_sw, "Bitte &uuml;berpr&uuml;fen Sie die URL von diesem Feed.");
+
+                            if (e.InnerException != null)
+                            {
+                                Console.WriteLine(e.InnerException.StackTrace);
+                            }
+
+                        }
+
                         catch (Exception e)
                         {
                             //Console.WriteLine("ERROR: " + e);

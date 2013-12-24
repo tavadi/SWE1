@@ -12,7 +12,7 @@ GO
 -- ########################################################################################################
 CREATE TABLE [dbo].[MESSDATEN]
 (
-	[ID]			int PRIMARY KEY IDENTITY(0,1)	NOT NULL,
+	[ID]			numeric(38,0) PRIMARY KEY IDENTITY(0,1)	NOT NULL,	-- PK
 	[DATE]			date	NOT NULL,
 	[TEMPERATUR]	numeric(38, 2)	NOT NULL,
 	[TIMESTAMP]		datetime2(0)	NULL
@@ -22,7 +22,7 @@ GO
 -- ########################################################################################################
 CREATE TABLE [dbo].[RSSFEED]
 (
-	[ID]			int PRIMARY KEY IDENTITY(0,1)	NOT NULL,
+	[ID]			numeric(38,0) PRIMARY KEY IDENTITY(0,1)	NOT NULL,	-- PK
 	[NAME]			nvarchar(50)	NOT NULL,
 	[FEED]			nvarchar(300)	NOT NULL,
 	[TIMESTAMP]		datetime2(0)	NULL

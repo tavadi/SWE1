@@ -54,7 +54,7 @@ namespace Server
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine();
 
-            for (int i = 0; i < 80; i++)
+            for (int i = 0; i < 80; ++i)
             {
                 Console.Write("-");
             }
