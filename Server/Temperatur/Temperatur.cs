@@ -25,8 +25,10 @@ namespace Server
 
         private StreamWriter _sw;
 
+        // other classes
         private Response _resp = new Response();
         private DBHandler _dbHandler = new DBHandler();
+
 
         // ##########################################################################################################################################
         // StreamWriter

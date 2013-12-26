@@ -25,10 +25,11 @@ namespace Server
         private string _url;
 
         private StreamWriter _sw;
-        private Response _resp = new Response();
-
-        private DBHandler _dbHandler = new DBHandler();
         private SqlConnection _db;
+
+        // other classes
+        private Response _resp = new Response();
+        private DBHandler _dbHandler = new DBHandler();
 
 
         // ##########################################################################################################################################

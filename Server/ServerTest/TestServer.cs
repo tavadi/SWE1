@@ -32,6 +32,25 @@ namespace ServerTest
 
         // ##########################################################################################################################################
         [TestMethod]
+        public void Server_CheckServerIsRunning_True()
+        {
+            var server = new Server.Server();
+            server.StartServer();
+
+            Assert.AreEqual(true, server.IsRunning);
+        }
+
+        // ##########################################################################################################################################
+        [TestMethod]
+        public void Server_CheckServerIsRunning_False()
+        {
+            var server = new Server.Server();
+
+            Assert.AreEqual(false, server.IsRunning);
+        }
+
+        // ##########################################################################################################################################
+        [TestMethod]
         public void Server_CheckUrlNavi_True()
         {
             string PluginName = "Navi.html";

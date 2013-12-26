@@ -7,7 +7,6 @@ using System.Net;
 using System.Net.Sockets;
 
 
-
 namespace Server
 {
     class Program
@@ -18,7 +17,7 @@ namespace Server
 
             server.StartServer();
 
-            while (server.isRunning)
+            while (server.IsRunning)
             {
                 string input = Console.ReadLine();
 
@@ -27,12 +26,9 @@ namespace Server
                     //WebServer.isRunning = false;
                     Environment.Exit(1);
                 }
-                
             }
             // Wait for Input
             Console.ReadLine();
-
-
         }
     }
 }

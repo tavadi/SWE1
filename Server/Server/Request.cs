@@ -14,6 +14,7 @@ namespace Server
         private string _pluginName;
         private List<string> _header = new List<string>();
 
+        // other classes
         private Url _url;
 
         // ##########################################################################################################################################

@@ -25,6 +25,8 @@ namespace Server
         private string _response;
 
         private StreamWriter _sw;
+
+        // other classes
         private Response _resp = new Response();
 
         private static Dictionary<string, List<string>> _StreetCity = new Dictionary<string, List<string>>();

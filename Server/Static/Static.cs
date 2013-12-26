@@ -22,10 +22,9 @@ namespace Server
 
         private StreamWriter _sw;
 
+        // other classes
         private Response _resp = new Response();
-
-
-
+        
 
         // ##########################################################################################################################################
         // Streamwriter

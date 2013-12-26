@@ -16,6 +16,7 @@ namespace Server
         //private string _message;
         private bool _isRunning;
 
+        // other classes
         private Response _response;
         private Request _request;
         private PluginManager _pluginManager;
@@ -30,12 +31,13 @@ namespace Server
 
         
         // ##########################################################################################################################################
-        public bool isRunning
+        public bool IsRunning
         {
             get
             {
                 return _isRunning;
             }
+
             set
             {
                 this._isRunning = value;
@@ -152,6 +154,5 @@ namespace Server
             //stream.Close();
             //sr.Close();
         }
-         
     }
 }

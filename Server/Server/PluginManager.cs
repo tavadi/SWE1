@@ -20,6 +20,7 @@ namespace Server
 
         private StreamWriter _sw;
 
+        // other classes
         private Response _response = new Response();
 
 
