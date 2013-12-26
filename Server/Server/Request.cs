@@ -12,16 +12,13 @@ namespace Server
     {
         private string[] _parameter;
         private string _pluginName;
-        private List<string> _header;
+        private List<string> _header = new List<string>();
 
+        private Url _url;
 
         // ##########################################################################################################################################
         public Request(StreamReader sr)
         {
-            // HTTP-Header Informationen
-            _header = new List<string>();
-
-
             // Read the Message from Client
             while (!sr.EndOfStream)
             {
@@ -63,13 +60,13 @@ namespace Server
                 if (_header[0] == "GET")
                 {
                     // Call Constructor with 1 Parameter
-                    Url url = new Url(_header[1]);
+                    _url = new Url(_header[1]);
 
-                    url.SplitUrlFirst("GET");
-                    url.SplitUrlSecond();
+                    _url.SplitUrlFirst("GET");
+                    _url.SplitUrlSecond();
 
-                    _pluginName = url.Name;
-                    _parameter = url.URL;
+                    _pluginName = _url.Name;
+                    _parameter = _url.URL;
 
                     //Console.WriteLine("GET");
                 }
@@ -78,13 +75,13 @@ namespace Server
                 else if (_header[0] == "POST")
                 {
                     // Call Constructor with 3 Parameter
-                    Url url = new Url(_header[1], Convert.ToInt32(_header[2]), sr);
+                    _url = new Url(_header[1], Convert.ToInt32(_header[2]), sr);
 
-                    url.SplitUrlFirst("POST");
-                    url.SplitUrlSecond();
+                    _url.SplitUrlFirst("POST");
+                    _url.SplitUrlSecond();
 
-                    _pluginName = url.Name;
-                    _parameter = url.URL;
+                    _pluginName = _url.Name;
+                    _parameter = _url.URL;
 
                     //Console.WriteLine("POST");                
                 }

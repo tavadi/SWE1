@@ -20,7 +20,7 @@ namespace Server
             string xml;
 
             // XML erstellen
-            xml =  @"<?xml version='1.0' encoding='UTF-8' standalone='yes'?>
+            xml = @"<?xml version='1.0' encoding='UTF-8' standalone='yes'?>
                         <PluginTemperatur>
                             <title>Plugin Temperatur</title>
                     ";
@@ -49,7 +49,7 @@ namespace Server
                 }
             }
 
-            xml +=      "</PluginTemperatur>";
+            xml += "</PluginTemperatur>";
 
 
             return xml;

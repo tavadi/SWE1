@@ -9,21 +9,17 @@ using System.Net;
 using System.Net.Sockets;
 using System.Web;
 
-
-#region name
-//code
-#endregion
-
-
 namespace Server
 {
     public class Server
     {
         //private string _message;
         private bool _isRunning;
+
         private Response _response;
-
-
+        private Request _request;
+        private PluginManager _pluginManager;
+        private FirstForm _firstForm;
 
         // ##########################################################################################################################################
         // Konstruktor
@@ -87,10 +83,10 @@ namespace Server
             listener.Start();
 
             // Plugin Temperatur: Sensor auslesen
-            PluginManager pluginManager = new PluginManager("GetTemperatur.html");
+            _pluginManager = new PluginManager("Temperatur.html", true);
             
             // Plugin Navi - Straßenkarte einlesen
-            pluginManager = new PluginManager("Navi.html");
+            _pluginManager = new PluginManager("Navi.html", true);
 
 
             Console.ForegroundColor = ConsoleColor.Red;
@@ -129,24 +125,24 @@ namespace Server
 
 
             // New Request
-            Request requestPlugin = new Request(sr);
+            _request = new Request(sr);
 
             
             // Wird nur beim ERSTEN Aufruf eine Form ausgegeben
-            if (requestPlugin.Name == "")
+            if (_request.Name == "")
             {
                 // First Form
-                FirstForm FirstForm = new FirstForm();
-                FirstForm.CreateFirstForm(sw);
+                _firstForm = new FirstForm();
+                _firstForm.CreateFirstForm(sw);
             }
             
             
 
             // Verhindert doppelte Ausgabe
-            if (requestPlugin.Name != "favicon.ico" && requestPlugin.Name != null)
+            if (_request.Name != "favicon.ico" && _request.Name != null)
             {
                 // start PluginManager
-                PluginManager PluginManager = new PluginManager(requestPlugin.Name, requestPlugin.Parameter, sw);
+                _pluginManager = new PluginManager(_request.Name, _request.Parameter, sw);
             }
 
             

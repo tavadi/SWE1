@@ -9,12 +9,13 @@ namespace Server
 {
     public class FirstForm
     {
+        private Response _response = new Response();
 
         public void CreateFirstForm(StreamWriter sw)
         {
             string msg =
                @"
-                    <button><a href='GetTemperatur.html'>Plugin Temperatur</a></button>
+                    <button><a href='Temperatur.html'>Plugin Temperatur</a></button>
                     <br />
                     <button><a href='Static.html'>Plugin Static</a></button>
                     <br />
@@ -25,9 +26,8 @@ namespace Server
 
             int size = msg.Length;
 
-            Response Response = new Response();
-            Response.ContentType = "text/html";
-            Response.SendMessage(sw, msg);
+            _response.ContentType = "text/html";
+            _response.SendMessage(sw, msg);
         }
     }
 }

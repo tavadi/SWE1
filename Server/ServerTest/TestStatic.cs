@@ -48,6 +48,5 @@ namespace ServerTest
 
             Assert.AreEqual("wma", staticPlugin.FileExtension);
         }
-
     }
 }

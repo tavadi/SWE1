@@ -14,31 +14,25 @@ namespace Server
         
         private string _name;
         private string[] _parameter;
+        private bool _firstAccess;
 
         private bool _pluginExists = false;
 
         private StreamWriter _sw;
-        private Response _resp = new Response();
+
+        private Response _response = new Response();
 
 
         // ##########################################################################################################################################
         // Konstruktor
-        public PluginManager(string pluginName)
+        public PluginManager(string pluginName, bool firstAccess)
         {
             _name = pluginName;
+            _firstAccess = firstAccess;
+
             CheckPlugin();
         }
 
-/*
-        // ##########################################################################################################################################
-        public PluginManager(string pluginName, string[] Parameter)
-        {
-            _name = pluginName;
-            _parameter = Parameter;
-
-            checkPlugin();
-        }
-*/
 
         // ##########################################################################################################################################
         public PluginManager(string pluginName, string[] parameter, StreamWriter sw)
@@ -47,10 +41,9 @@ namespace Server
             _parameter = parameter;
 
             _sw = sw;
+
             CheckPlugin();
         }
-
-
 
 
         // ##########################################################################################################################################
@@ -69,7 +62,7 @@ namespace Server
                 string filename = Path.GetFileNameWithoutExtension(plugin);
                 //Console.WriteLine(result);
 
-                // Server.GetTemperatur
+                // Server.Temperatur
                 // Server.Static
                 Type type = myDllAssembly.GetType("Server." + filename);
 
@@ -121,9 +114,9 @@ namespace Server
                             Console.WriteLine("Falscher Parameter: 404 Error");
 
                             // 404 ErrorPage
-                            _resp.ContentType = "text/html";
-                            _resp.Status = false;
-                            _resp.SendMessage(_sw, "Bitte &uuml;berpr&uuml;fen Sie Ihre Paramter.");
+                            _response.ContentType = "text/html";
+                            _response.Status = false;
+                            _response.SendMessage(_sw, "Bitte &uuml;berpr&uuml;fen Sie Ihre Paramter.");
 
                             if (e.InnerException != null)
                             {
@@ -136,9 +129,9 @@ namespace Server
                             Console.WriteLine("Falscher Parameter: 404 Error");
 
                             // 404 ErrorPage
-                            _resp.ContentType = "text/html";
-                            _resp.Status = false;
-                            _resp.SendMessage(_sw, "Bitte &uuml;berpr&uuml;fen Sie die URL von diesem Feed.");
+                            _response.ContentType = "text/html";
+                            _response.Status = false;
+                            _response.SendMessage(_sw, "Bitte &uuml;berpr&uuml;fen Sie die URL von diesem Feed.");
 
                             if (e.InnerException != null)
                             {
@@ -150,9 +143,9 @@ namespace Server
                         catch (Exception e)
                         {
                             //Console.WriteLine("ERROR: " + e);
-                            _resp.ContentType = "text/html";
-                            _resp.Status = false;
-                            _resp.SendMessage(_sw, "Error PluginManager - " + e);
+                            _response.ContentType = "text/html";
+                            _response.Status = false;
+                            _response.SendMessage(_sw, "Error PluginManager - " + e);
                         }
                     }
                 }
@@ -163,10 +156,10 @@ namespace Server
                 //Console.ForegroundColor = ConsoleColor.Green;
             }
 
-            if (_pluginExists == false)
+            if ((_firstAccess == false) && (_pluginExists == false))
             {
-                _resp.ContentType = "text/html";
-                _resp.SendMessage(_sw, "Error PluginManager - Ihr ausgew&auml;hltes Plugin ist derzeit nicht verf&uuml;gbar. Bitte probieren Sie es sp&auml;ter erneut");
+                _response.ContentType = "text/html";
+                _response.SendMessage(_sw, "Error PluginManager - Ihr ausgew&auml;hltes Plugin ist derzeit nicht verf&uuml;gbar. Bitte probieren Sie es sp&auml;ter erneut");
             }
         }  
     }

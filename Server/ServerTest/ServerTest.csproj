@@ -58,10 +58,6 @@
     <Compile Include="TestTemperatur.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\GetTemperatur\GetTemperatur.csproj">
-      <Project>{5cf79db1-0544-41d4-9405-4b5018142823}</Project>
-      <Name>GetTemperatur</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Navi\Navi.csproj">
       <Project>{51af2658-4ec2-4b67-89c4-5fa641869a80}</Project>
       <Name>Navi</Name>
@@ -77,6 +73,10 @@
     <ProjectReference Include="..\Static\Static.csproj">
       <Project>{b49fb6e7-65ff-4823-8d2e-bc3b7fd29bf7}</Project>
       <Name>Static</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Temperatur\Temperatur.csproj">
+      <Project>{86c3c277-c841-47b4-8546-f4a7ec93d19b}</Project>
+      <Name>Temperatur</Name>
     </ProjectReference>
   </ItemGroup>
   <Choose>

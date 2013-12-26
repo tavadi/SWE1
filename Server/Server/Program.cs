@@ -14,19 +14,20 @@ namespace Server
     {
         static void Main(string[] args)
         {
-            Server WebServer = new Server();
+            Server server = new Server();
 
-            WebServer.StartServer();
+            server.StartServer();
 
-            while (WebServer.isRunning)
+            while (server.isRunning)
             {
                 string input = Console.ReadLine();
 
-                if (input == "exit")
+                if (input.ToLower() == "exit")
                 {
                     //WebServer.isRunning = false;
                     Environment.Exit(1);
                 }
+                
             }
             // Wait for Input
             Console.ReadLine();

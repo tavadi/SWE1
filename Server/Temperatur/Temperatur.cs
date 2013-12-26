@@ -11,10 +11,9 @@ using Server;
 
 namespace Server
 {
-    public class GetTemperatur : IPlugins
+    public class Temperatur : IPlugins
     {
-
-        private string _pluginName = "GetTemperatur.html";
+        private string _pluginName = "Temperatur.html";
         private bool _isPlugin = false;
         private string[] _parameter;
         private string _response;
@@ -25,6 +24,7 @@ namespace Server
         private uint _max;
 
         private StreamWriter _sw;
+
         private Response _resp = new Response();
         private DBHandler _dbHandler = new DBHandler();
 
@@ -119,9 +119,9 @@ namespace Server
         private void DisplayForm()
         {
             _response += @"
-                <form method='POST' action='GetTemperatur.html'>
+                <form method='POST' action='Temperatur.html'>
                     <label>Year</label>
-                    <input type='text' name='year' value='2013' />
+                    <input type='text' name='year' value='2012' />
                     </br>
                     <label>Month</label>
                     <input type='text' name='month' value='12' />
@@ -196,7 +196,7 @@ namespace Server
 
             try
             {
-            // Parameter und Werte suchen
+                // Parameter und Werte suchen
                 for (int i = 0; i < _parameter.Length; ++i)
                 {
                     a = i;

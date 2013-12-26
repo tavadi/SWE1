@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server", "Server\Server.csproj", "{FAEDF3C2-F3B7-45BE-A445-AC580299C8E6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GetTemperatur", "GetTemperatur\GetTemperatur.csproj", "{5CF79DB1-0544-41D4-9405-4B5018142823}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Navi", "Navi\Navi.csproj", "{51AF2658-4EC2-4B67-89C4-5FA641869A80}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Static", "Static\Static.csproj", "{B49FB6E7-65FF-4823-8D2E-BC3B7FD29BF7}"
@@ -12,6 +10,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerTest", "ServerTest\ServerTest.csproj", "{0349B082-DDA6-4523-BCD8-967DD659728F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RssFeed", "RssFeed\RssFeed.csproj", "{C5ED4A2D-6419-4EFD-AA9D-3E891C1D9A8C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Temperatur", "Temperatur\Temperatur.csproj", "{86C3C277-C841-47B4-8546-F4A7EC93D19B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +23,6 @@ Global
 		{FAEDF3C2-F3B7-45BE-A445-AC580299C8E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FAEDF3C2-F3B7-45BE-A445-AC580299C8E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FAEDF3C2-F3B7-45BE-A445-AC580299C8E6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5CF79DB1-0544-41D4-9405-4B5018142823}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5CF79DB1-0544-41D4-9405-4B5018142823}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5CF79DB1-0544-41D4-9405-4B5018142823}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5CF79DB1-0544-41D4-9405-4B5018142823}.Release|Any CPU.Build.0 = Release|Any CPU
 		{51AF2658-4EC2-4B67-89C4-5FA641869A80}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{51AF2658-4EC2-4B67-89C4-5FA641869A80}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{51AF2658-4EC2-4B67-89C4-5FA641869A80}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -43,6 +39,10 @@ Global
 		{C5ED4A2D-6419-4EFD-AA9D-3E891C1D9A8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C5ED4A2D-6419-4EFD-AA9D-3E891C1D9A8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C5ED4A2D-6419-4EFD-AA9D-3E891C1D9A8C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{86C3C277-C841-47B4-8546-F4A7EC93D19B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{86C3C277-C841-47B4-8546-F4A7EC93D19B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{86C3C277-C841-47B4-8546-F4A7EC93D19B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{86C3C277-C841-47B4-8546-F4A7EC93D19B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

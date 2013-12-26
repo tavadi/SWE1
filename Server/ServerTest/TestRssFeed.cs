@@ -15,12 +15,12 @@ namespace ServerTest
         {
             RssFeed feed = new RssFeed();
 
-            string[] param = { "EditSave", "test", "FeedUrl", "www.google.at" };
+            string[] param = { "EditSave", "0", "FeedName", "Golem", "FeedUrl", "http://golem.de.dynamic.feedsportal.com/pf/578068/http://rss.golem.de/rss.php?feed=RSS2.0" };
 
             feed.Init(param);
             feed.ParseParameters();
 
-            Assert.AreEqual("test", feed.Name);
+            Assert.AreEqual("Golem", feed.Name);
         }
 
         // ##################################################################
@@ -29,12 +29,14 @@ namespace ServerTest
         {
             RssFeed feed = new RssFeed();
 
-            string[] param = { "EditSave", "test", "FeedUrl", "www.google.at" };
+            string url = "http://golem.de.dynamic.feedsportal.com/pf/578068/http://rss.golem.de/rss.php?feed=RSS2.0";
+
+            string[] param = { "EditSave", "0", "FeedName", "Golem", "FeedUrl", url };
 
             feed.Init(param);
             feed.ParseParameters();
 
-            Assert.AreEqual("www.google.at", feed.Url);
+            Assert.AreEqual(url, feed.Url);
         }
 
 
@@ -46,7 +48,7 @@ namespace ServerTest
         {
             RssFeed feed = new RssFeed();
 
-            string[] param = { "EditSave", "test", "FeedUrl", "www.google.at" };
+            string[] param = { "EditSave", "0", "FeedName", "Golem", "FeedUrl", "http://golem.de.dynamic.feedsportal.com/pf/578068/http://rss.golem.de/rss.php?feed=RSS2.0" };
 
             feed.Init(param);
             feed.ParseParameters();
@@ -60,7 +62,7 @@ namespace ServerTest
         {
             RssFeed feed = new RssFeed();
 
-            string[] param = { "EditSave", "test", "FeedUrl", "www.google.at" };
+            string[] param = { "EditSave", "0", "FeedName", "Golem", "FeedUrl", "http://golem.de.dynamic.feedsportal.com/pf/578068/http://rss.golem.de/rss.php?feed=RSS2.0" };
 
             feed.Init(param);
             feed.ParseParameters();
@@ -74,7 +76,7 @@ namespace ServerTest
         {
             RssFeed feed = new RssFeed();
 
-            string[] param = { "EditSave", "test", "FeedUrl", "www.google.at" };
+            string[] param = { "EditSave", "0", "FeedName", "Golem", "FeedUrl", "http://golem.de.dynamic.feedsportal.com/pf/578068/http://rss.golem.de/rss.php?feed=RSS2.0" };
 
             feed.Init(param);
             feed.ParseParameters();

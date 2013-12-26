@@ -13,7 +13,7 @@ namespace ServerTest
         [TestMethod]
         public void GetTemperatur_CheckYear_True()
         {
-            GetTemperatur temp = new GetTemperatur();
+            Temperatur temp = new Temperatur();
 
             string[] param = { "year", "2013", "month", "10", "day", "25", "max", "30" };
 
@@ -27,7 +27,7 @@ namespace ServerTest
         [TestMethod]
         public void GetTemperatur_CheckMonth_True()
         {
-            GetTemperatur temp = new GetTemperatur();
+            Temperatur temp = new Temperatur();
 
             string[] param = { "year", "2013", "month", "10", "day", "25", "max", "30" };
 
@@ -41,7 +41,7 @@ namespace ServerTest
         [TestMethod]
         public void GetTemperatur_CheckDay_True()
         {
-            GetTemperatur temp = new GetTemperatur();
+            Temperatur temp = new Temperatur();
 
             string[] param = { "year", "2013", "month", "10", "day", "25", "max", "30" };
 
@@ -55,7 +55,7 @@ namespace ServerTest
         [TestMethod]
         public void GetTemperatur_CheckMax_True()
         {
-            GetTemperatur temp = new GetTemperatur();
+            Temperatur temp = new Temperatur();
 
             string[] param = { "year", "2013", "month", "10", "day", "25", "max", "30" };
 
@@ -72,7 +72,7 @@ namespace ServerTest
         [TestMethod]
         public void GetTemperatur_CheckDbConnectionUsername_True()
         {
-            GetTemperatur temp = new GetTemperatur();
+            Temperatur temp = new Temperatur();
 
             string[] param = { "year", "2013", "month", "10", "day", "25", "max", "30" };
 
@@ -86,7 +86,7 @@ namespace ServerTest
         [TestMethod]
         public void GetTemperatur_CheckDbConnectionDatabase_True()
         {
-            GetTemperatur temp = new GetTemperatur();
+            Temperatur temp = new Temperatur();
 
             string[] param = { "year", "2013", "month", "10", "day", "25", "max", "30" };
 
@@ -100,7 +100,7 @@ namespace ServerTest
         [TestMethod]
         public void GetTemperatur_CheckDbConnectionSecurity_True()
         {
-            GetTemperatur temp = new GetTemperatur();
+            Temperatur temp = new Temperatur();
 
             string[] param = { "year", "2013", "month", "10", "day", "25", "max", "30" };
 

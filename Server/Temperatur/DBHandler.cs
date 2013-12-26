@@ -16,11 +16,11 @@ namespace Server
 
         public DBHandler()
         {
-            
+
             _data.Add("Username", ".\\SqlExpress");
             _data.Add("Database", "SWE_Temperatur");
             _data.Add("Security", "true");
-            
+
             _db = new SqlConnection("Data Source=" + _data["Username"] + "; Initial Catalog=" + _data["Database"] + "; Integrated Security=" + _data["Security"] + ";");
         }
 
