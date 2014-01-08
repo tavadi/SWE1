@@ -97,7 +97,8 @@ namespace Server
 
         // ##########################################################################################################################################
         private void SplitPost()
-        {                // Werte aus dem Body filtern
+        {                
+            // Werte aus dem Body filtern
             var buffer = new char[_contentLength];
 
             _sr.Read(buffer, 0, _contentLength);

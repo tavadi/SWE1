@@ -55,6 +55,7 @@
     <Compile Include="Server.cs" />
     <Compile Include="WrongFilenameException.cs" />
     <Compile Include="WrongParameterException.cs" />
+    <Compile Include="WrongPluginException.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

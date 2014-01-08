@@ -11,7 +11,7 @@ namespace ServerTest
         // Plugin Temperatur
         // ##########################################################################################################################################
         [TestMethod]
-        public void GetTemperatur_CheckYear_True()
+        public void Temperatur_CheckYear_True()
         {
             Temperatur temp = new Temperatur();
 
@@ -25,7 +25,7 @@ namespace ServerTest
 
         // ##################################################################
         [TestMethod]
-        public void GetTemperatur_CheckMonth_True()
+        public void Temperatur_CheckMonth_True()
         {
             Temperatur temp = new Temperatur();
 
@@ -39,7 +39,7 @@ namespace ServerTest
 
         // ##################################################################
         [TestMethod]
-        public void GetTemperatur_CheckDay_True()
+        public void Temperatur_CheckDay_True()
         {
             Temperatur temp = new Temperatur();
 
@@ -53,7 +53,7 @@ namespace ServerTest
 
         // ##################################################################
         [TestMethod]
-        public void GetTemperatur_CheckMax_True()
+        public void Temperatur_CheckMax_True()
         {
             Temperatur temp = new Temperatur();
 
@@ -70,7 +70,7 @@ namespace ServerTest
         // Database Connection
         // ##########################################################################################################################################
         [TestMethod]
-        public void GetTemperatur_CheckDbConnectionUsername_True()
+        public void Temperatur_CheckDbConnectionUsername_True()
         {
             Temperatur temp = new Temperatur();
 
@@ -84,7 +84,7 @@ namespace ServerTest
 
         // ##################################################################
         [TestMethod]
-        public void GetTemperatur_CheckDbConnectionDatabase_True()
+        public void Temperatur_CheckDbConnectionDatabase_True()
         {
             Temperatur temp = new Temperatur();
 
@@ -98,7 +98,7 @@ namespace ServerTest
 
         // ##################################################################
         [TestMethod]
-        public void GetTemperatur_CheckDbConnectionSecurity_True()
+        public void Temperatur_CheckDbConnectionSecurity_True()
         {
             Temperatur temp = new Temperatur();
 

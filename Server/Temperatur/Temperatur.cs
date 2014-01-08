@@ -40,7 +40,7 @@ namespace Server
             }
         }
 
-
+        /*
         // ##########################################################################################################################################
         public string PluginName
         {
@@ -50,7 +50,7 @@ namespace Server
                 return _pluginName;
             }
         }
-
+        */
 
         // ##########################################################################################################################################
         public bool IsPlugin
@@ -121,6 +121,10 @@ namespace Server
         private void DisplayForm()
         {
             _response += @"
+                <a href='/'>Zur&uuml;ck</a>
+                <br />
+                <br />
+
                 <form method='POST' action='Temperatur.html'>
                     <label>Year</label>
                     <input type='text' name='year' value='2012' />
@@ -257,6 +261,12 @@ namespace Server
         // ##########################################################################################################################################
         private void PrepareAnswer()
         {
+
+            _response += @"
+                                <a href='Temperatur.html'>Zur&uuml;ck</a>
+                                <br />
+                                <br />";
+
             // Datenbank 
             //              Database:   SEW_Temperatur
             //              Uuser:      local

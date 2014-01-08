@@ -103,6 +103,11 @@ namespace Server
         // ##########################################################################################################################################
         private void ShowFiles()
         {
+            _response += @"
+                            <a href='/'>Zur&uuml;ck</a>
+                            <br />
+                            <br />";
+
             // Pfad am Server --> gesamter Inhalt wird ausgegeben
             string path = Environment.CurrentDirectory + "\\Files\\";
 

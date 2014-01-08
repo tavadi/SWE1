@@ -101,7 +101,7 @@ namespace Server
                 DisplayInputForm();
             }
 
-            else if (_parameter[0] == "Edit")
+            else if ((_parameter[0] == "Edit") || (_parameter[0] == "Back"))
             {
                 DisplayEditForm();
             }
@@ -142,6 +142,9 @@ namespace Server
         public void DisplayForm()
         {
             _response += @"
+                <a href='/'>Zur&uuml;ck</a>
+                <br />
+                <br />
                 <button><a href='RssFeed.html?Show'>Rss-Feed ausgeben</a></button>
                 <br />
                 <button><a href='RssFeed.html?Edit'>Rss-Feed bearbeiten</a></button>
@@ -249,6 +252,11 @@ namespace Server
                 using (SqlDataReader rd = cmd.ExecuteReader())
                 {
                     _response += @"
+
+                    <a href='RssFeed.html'>Zur&uuml;ck</a>
+                    <br />
+                    <br />
+
                     <form method='POST' action='RssFeed.html?ShowFeed'>
                         <label>RSS-Feed-Link</label>
                     
@@ -273,6 +281,12 @@ namespace Server
         // ##########################################################################################################################################
         private void DisplayEditForm()
         {
+            // Back-Button
+            _response += @"<a href='RssFeed.html'>Zur&uuml;ck</a>
+                            <br />
+                            <br />";
+
+
             // ADD
             _response += @"
                 <div id='RssFeedSave' class='feedContainer'>
@@ -368,7 +382,7 @@ namespace Server
                 _db.Close();
             }
 
-            _response = "Eintrag wurde gespeichert";
+            _response = "Eintrag wurde gespeichert... <a href='RssFeed.html?Back'>Zur&uuml;ck</a>";
         }
 
 
@@ -390,7 +404,7 @@ namespace Server
                 _db.Close();
             }
 
-            _response = "Eintrag wurde ge&auml;ndert";
+            _response = "Eintrag wurde ge&auml;ndert... <a href='RssFeed.html?Back'>Zur&uuml;ck</a>";
         }
 
 
@@ -407,7 +421,7 @@ namespace Server
                 _db.Close();
             }
 
-            _response = "Eintrag wurde gel&ouml;scht";
+            _response = "Eintrag wurde gel&ouml;scht... <a href='RssFeed.html?Back'>Zur&uuml;ck</a>";
         }
 
 

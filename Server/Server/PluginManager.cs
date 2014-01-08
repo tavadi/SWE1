@@ -23,6 +23,7 @@ namespace Server
         // other classes
         private Response _response = new Response();
 
+        private LogFile _logFile;
 
         // ##########################################################################################################################################
         // Konstruktor
@@ -68,8 +69,18 @@ namespace Server
                 Type type = myDllAssembly.GetType("Server." + filename);
 
                 // Create Instance 
-                IPlugins staticInstance = Activator.CreateInstance(type) as IPlugins;
+                IPlugins staticInstance = null;
+                try
+                {
+                    staticInstance = Activator.CreateInstance(type) as IPlugins;
+                }
+                catch (ArgumentNullException e)
+                {
+                    // Tritt auf, wenn eine dll-Datei kopiert wurde und unter einem anderen Namen abgespeichert ist
+                    //Console.WriteLine("PluginManager: Es ist ein Fehler im folgenden Plugin aufgetreten: " + filename);
+                    _logFile = new LogFile(e.ToString());
 
+                }
                 
                 if (staticInstance == null)
                 {
@@ -80,21 +91,19 @@ namespace Server
                 // Call function pluginName and return value
                 //string value = (string)pluginName.GetValue(staticInstance, null);
 
-                // Startseiete
+                // Startseite
                 if (_name == "")
                 {
                     _pluginExists = true;
                 }
                 else
                 {
-                    filename = filename + ".html";
+                    filename += ".html";
+
                     // If filename is the same as pluginName in URL --> Set true
                     if (filename == _name)
                     {
                         _pluginExists = true;
-
-                        //isPlugin.SetValue(staticInstance, true, null);
-                        //writer.SetValue(staticInstance, _sw, null);
 
                         staticInstance.IsPlugin = true;
                         staticInstance.Writer = _sw;
@@ -123,6 +132,8 @@ namespace Server
                             {
                                 Console.WriteLine(e.InnerException.StackTrace);
                             }
+
+                            _logFile = new LogFile(e.ToString());
                         }
 
                         catch (WrongFilenameException e)
@@ -139,6 +150,7 @@ namespace Server
                                 Console.WriteLine(e.InnerException.StackTrace);
                             }
 
+                            _logFile = new LogFile(e.ToString());
                         }
 
                         catch (Exception e)
@@ -147,6 +159,8 @@ namespace Server
                             _response.ContentType = "text/html";
                             _response.Status = false;
                             _response.SendMessage(_sw, "Error PluginManager - " + e);
+
+                            _logFile = new LogFile(e.ToString());
                         }
                     }
                 }

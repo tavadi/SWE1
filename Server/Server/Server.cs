@@ -29,7 +29,6 @@ namespace Server
             _response = new Response();
         }
 
-        
         // ##########################################################################################################################################
         public bool IsRunning
         {
@@ -64,7 +63,7 @@ namespace Server
 
 
         // ############################################################################################################
-        // Create Server-Thread (MainThread) for listening
+        // Create Server-Thread
         public void StartServer()
         {
             Thread thread = new Thread(StartServerThread);
@@ -76,7 +75,7 @@ namespace Server
 
 
         // ##########################################################################################################################################
-        // ServerThread ... listening the whole time
+        // ServerThread
         public void StartServerThread()
         {
             Thread.CurrentThread.Name = "ServerThread";

@@ -151,7 +151,7 @@ namespace Server
 
 
             // Pfad am Server --> gesamter Inhalt wird ausgegeben
-            string path = "C:\\Ress\\austria-latest.osm";
+            string path = "C:\\Ress\\antarctica-latest.osm";
             Console.WriteLine(path);
 
             //counter = CountLines(path);
@@ -197,6 +197,10 @@ namespace Server
         {
             _response =
                 @"
+                    <a href='/'>Zur&uuml;ck</a>
+                    <br />
+                    <br />
+
                     <button><a href='Navi.html?Preparing'>Stra&szlig;enkarte neu aufbereiten</a></button>
                     <br />
                     <button><a href='Navi.html?Navigation'>Stra&szlig;en <--> Orte</a></button>
@@ -216,11 +220,19 @@ namespace Server
                 Thread thread = new Thread(Preparing);
                 thread.Start();
 
-                _response = "Bitte warten Sie, w&auml;hrend die Daten aktualisiert werden";
+                _response = @"
+                                <a href='Navi.html'>Zur&uuml;ck</a>
+                                <br />
+                                <br />
+                                Bitte warten Sie, w&auml;hrend die Daten aktualisiert werden";
             }
             else
             {
-                _response = "Die Daten werden gerade aktualisiert. Bitte probieren Sie es sp&auml;ter erneut!";
+                _response = @"
+                                <a href='Navi.html'>Zur&uuml;ck</a>
+                                <br />
+                                <br />
+                                Die Daten werden gerade aktualisiert. Bitte probieren Sie es sp&auml;ter erneut!";
             }
         }
 
@@ -229,6 +241,10 @@ namespace Server
         private void DisplayInputForm()
         {
             _response += @"
+                    <a href='Navi.html'>Zur&uuml;ck</a>
+                    <br />
+                    <br />
+
                 <form method='POST' action='Navi.html?NavigationSearch'>
                     <label>Strassenname</label>
                     <input type='text' name='street' value='Barrett Lane' />
@@ -246,6 +262,12 @@ namespace Server
 
             if (_isPreparing == false)
             {
+
+                _response += @"
+                                <a href='Navi.html?Navigation'>Zur&uuml;ck</a>
+                                <br />
+                                <br />";
+
                 string decodedParameter = _parameter[1].Replace("+", " ");
 
                 string decodedParam = HttpUtility.UrlDecode(decodedParameter);
@@ -275,13 +297,17 @@ namespace Server
 
                 if (exists == false)
                 {
-                    throw new WrongParameterException("Navi ");
+                    throw new WrongParameterException("Navi");
                 }
 
             }
             else
             {
-                _response = "Die Daten werden gerade aktualisiert. Bitte probieren Sie es sp&auml;ter erneut!";
+                _response = @"
+                                <a href='Navi.html?Navigation'>Zur&uuml;ck</a>
+                                <br />
+                                <br />
+                                Die Daten werden gerade aktualisiert. Bitte probieren Sie es sp&auml;ter erneut!";
             }
         }
 
@@ -358,6 +384,7 @@ namespace Server
         }
 
 
+        // ##########################################################################################################################################
         public string Param
         {
             get { return _parameter[0]; }
