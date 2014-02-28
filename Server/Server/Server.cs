@@ -9,39 +9,49 @@ using System.Net;
 using System.Net.Sockets;
 using System.Web;
 
-
 namespace Server
 {
     public class Server
     {
-
-        private string _message;
+        //private string _message;
         private bool _isRunning;
 
+        // other classes
+        private Response _response;
+        private Request _request;
+        private PluginManager _pluginManager;
+        private FirstForm _firstForm;
 
+        // ##########################################################################################################################################
         // Konstruktor
-        public Server()     
-        { 
+        public Server()
+        {
+            _response = new Response();
         }
 
-        public bool isRunning
+        // ##########################################################################################################################################
+        public bool IsRunning
         {
             get
             {
                 return _isRunning;
             }
+
             set
             {
                 this._isRunning = value;
             }
         }
 
-        public void separator()
+
+        
+        // ##########################################################################################################################################
+        public void Separator()
         {
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine();
 
-            for (int i = 0; i < 80; i++)
+            for (int i = 0; i < 80; ++i)
             {
                 Console.Write("-");
             }
@@ -50,52 +60,10 @@ namespace Server
             Console.ForegroundColor = ConsoleColor.Green;
         }
 
-        public string Message
-        {
-            get
-            {
-                return _message;
-            }
-
-            set
-            {
-                _message =
-                @"
-                <html>
-                    <head> 
-                        <title>SensorCloud</title> 
-                    </head> 
-                    <body>
-                        <h1> "
-                            + value + @" 
-                        </h1> 
-                    </body> 
-                </html>";
-            }
-        }
-
-        public void sendMessage(StreamWriter sw)
-        {
-            sw.WriteLine("HTTP/1.1 200 OK");
-            sw.WriteLine("Server: Apache/1.3.29 (Unix) PHP/4.3.4");
-            sw.WriteLine("Content-Length: " + _message.Length);
-            sw.WriteLine("Content-Language: de");
-            sw.WriteLine("Connection: close");
-            sw.WriteLine("Content-Type: text/html");
-            sw.WriteLine();
-            sw.WriteLine(_message);
-
-            sw.Flush();
-        }
 
 
-
-
-
-
-
-       
-        // Create Server-Thread (MainThread) for listening
+        // ############################################################################################################
+        // Create Server-Thread
         public void StartServer()
         {
             Thread thread = new Thread(StartServerThread);
@@ -104,8 +72,10 @@ namespace Server
             _isRunning = true;
         }
 
-        
-        // ServerThread ... listening the whole time
+
+
+        // ##########################################################################################################################################
+        // ServerThread
         public void StartServerThread()
         {
             Thread.CurrentThread.Name = "ServerThread";
@@ -113,25 +83,36 @@ namespace Server
             TcpListener listener = new TcpListener(IPAddress.Any, 8080);
             listener.Start();
 
+            // Plugin Temperatur: Sensor auslesen
+            _pluginManager = new PluginManager("Temperatur.html", true);
+            
+            // Plugin Navi - Straßenkarte einlesen
+            _pluginManager = new PluginManager("Navi.html", true);
+
+
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine();
             Console.WriteLine("Server is running and listen at port 8080 ...");
             Console.WriteLine("Waiting for connection ...");
 
-            separator();
+            Separator();
 
             while (true)
             {
                 Socket s = listener.AcceptSocket();
 
-                ParameterizedThreadStart threadStart = new ParameterizedThreadStart(StartClientThread);
-                Thread thread = new Thread(threadStart);
-                thread.Start(s);
+                if (s.Connected)
+                {
+                    ParameterizedThreadStart ClientThread = new ParameterizedThreadStart(StartClientThread);
+                    Thread thread = new Thread(StartClientThread);
+                    thread.Start(s);
+                }
             }
-              
         }
 
 
+
+        // ##########################################################################################################################################
         // Each Client --> new ClientThread
         public void StartClientThread(object socket)
         {
@@ -143,43 +124,34 @@ namespace Server
             StreamReader sr = new StreamReader(stream);
             StreamWriter sw = new StreamWriter(stream);
 
-            /*
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("Connection accepted from " + s.RemoteEndPoint);
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine();
-            */
 
-            // Read the Message from Client
-            while (!sr.EndOfStream)
+            // New Request
+            _request = new Request(sr);
+
+            
+            // Wird nur beim ERSTEN Aufruf eine Form ausgegeben
+            if (_request.Name == "")
             {
-                string line = sr.ReadLine();
-                Console.WriteLine(line);
-                if (string.IsNullOrEmpty(line)) break;
+                // First Form
+                _firstForm = new FirstForm();
+                _firstForm.CreateFirstForm(sw);
+            }
+            
+            
+
+            // Verhindert doppelte Ausgabe
+            if (_request.Name != "favicon.ico" && _request.Name != null)
+            {
+                // start PluginManager
+                _pluginManager = new PluginManager(_request.Name, _request.Parameter, sw);
             }
 
-
-            // Build a Message for the Client
-            string message = "Done!";
-
-            this.Message = message;      // Create Message from Server to Client
-            sendMessage(sw);           // Send the Message to the Client
             
+    
             
-            /*
-            Console.WriteLine();
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("Conneciton close from " + s.RemoteEndPoint);
-            Console.ForegroundColor = ConsoleColor.White;
-            
-            separator();
-            */
-
-            s.Close();
-            stream.Close();
-            sr.Close();
-            sw.Close();            
+            //s.Close();
+            //stream.Close();
+            //sr.Close();
         }
-         
     }
 }

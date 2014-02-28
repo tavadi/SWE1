@@ -7,25 +7,23 @@ using System.Net;
 using System.Net.Sockets;
 
 
-
 namespace Server
 {
     class Program
     {
         static void Main(string[] args)
         {
+            Server server = new Server();
 
-            Server WebServer = new Server();
+            server.StartServer();
 
-            WebServer.StartServer();
-
-            while (WebServer.isRunning)
+            while (server.IsRunning)
             {
                 string input = Console.ReadLine();
-                Console.ForegroundColor = ConsoleColor.Green;
 
-                if (input == "exit")
+                if (input.ToLower() == "exit")
                 {
+                    //WebServer.isRunning = false;
                     Environment.Exit(1);
                 }
             }
