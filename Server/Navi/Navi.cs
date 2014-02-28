@@ -14,7 +14,6 @@ namespace Server
 {
     public class Navi : IPlugins
     {
-
         private string _pluginName = "Navi.html";
         private bool _isPlugin = false;
 
@@ -40,17 +39,6 @@ namespace Server
             set
             {
                 _sw = value;
-            }
-        }
-
-
-        // ##########################################################################################################################################
-        public string PluginName
-        {
-            get
-            {
-                Console.WriteLine("ICH BIN DAS PLUGIN: " + _pluginName);
-                return _pluginName;
             }
         }
 
@@ -151,7 +139,7 @@ namespace Server
 
 
             // Pfad am Server --> gesamter Inhalt wird ausgegeben
-            string path = "C:\\Ress\\antarctica-latest.osm";
+            string path = "C:\\Ress\\austria-latest.osm";
             Console.WriteLine(path);
 
             //counter = CountLines(path);
@@ -276,7 +264,7 @@ namespace Server
                 {
                     try
                     {
-                        if (kvp.Key == decodedParam)
+                        if (kvp.Key.ToLower() == decodedParam.ToLower())
                         {
                             exists = true;
 

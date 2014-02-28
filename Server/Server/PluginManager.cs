@@ -77,6 +77,7 @@ namespace Server
                 catch (ArgumentNullException e)
                 {
                     // Tritt auf, wenn eine dll-Datei kopiert wurde und unter einem anderen Namen abgespeichert ist
+                    // Pluginname und Dateiname passen nicht zusammen
                     //Console.WriteLine("PluginManager: Es ist ein Fehler im folgenden Plugin aufgetreten: " + filename);
                     _logFile = new LogFile(e.ToString());
 
@@ -86,12 +87,9 @@ namespace Server
                 {
                     continue;
                 }
-                
 
-                // Call function pluginName and return value
-                //string value = (string)pluginName.GetValue(staticInstance, null);
 
-                // Startseite
+                // Startseite anzeigen
                 if (_name == "")
                 {
                     _pluginExists = true;
@@ -112,9 +110,6 @@ namespace Server
                         {
                             object[] param = { _parameter };
 
-                            //init.Invoke(staticInstance, param);
-                            //run.Invoke(staticInstance, null);
-
                             staticInstance.Init(_parameter);
                             staticInstance.Run();
                         }
@@ -128,10 +123,12 @@ namespace Server
                             _response.Status = false;
                             _response.SendMessage(_sw, "Bitte &uuml;berpr&uuml;fen Sie Ihre Paramter.");
 
+                            /*
                             if (e.InnerException != null)
                             {
                                 Console.WriteLine(e.InnerException.StackTrace);
                             }
+                            */
 
                             _logFile = new LogFile(e.ToString());
                         }
@@ -145,10 +142,12 @@ namespace Server
                             _response.Status = false;
                             _response.SendMessage(_sw, "Bitte &uuml;berpr&uuml;fen Sie die URL von diesem Feed.");
 
+                            /*
                             if (e.InnerException != null)
                             {
                                 Console.WriteLine(e.InnerException.StackTrace);
                             }
+                            */
 
                             _logFile = new LogFile(e.ToString());
                         }

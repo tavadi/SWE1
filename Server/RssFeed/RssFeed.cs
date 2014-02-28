@@ -14,8 +14,8 @@ namespace Server
 {
     public class RssFeed : IPlugins
     {
-
         private string _pluginName = "RssFeed.html";
+
         private bool _isPlugin = false;
         private string[] _parameter;
         private string _response;
@@ -39,17 +39,6 @@ namespace Server
             set
             {
                 _sw = value;
-            }
-        }
-
-
-        // ##########################################################################################################################################
-        public string PluginName
-        {
-            get
-            {
-                Console.WriteLine("ICH BIN DAS PLUGIN: " + _pluginName);
-                return _pluginName;
             }
         }
 

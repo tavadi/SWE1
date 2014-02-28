@@ -10,8 +10,6 @@ namespace Server
 {
     public class Response
     {
-        private LogFile _logFile;
-
         private string _contentType;
         private bool _status = true;
         private string _filename;

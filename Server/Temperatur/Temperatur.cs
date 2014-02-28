@@ -13,7 +13,6 @@ namespace Server
 {
     public class Temperatur : IPlugins
     {
-        private string _pluginName = "Temperatur.html";
         private bool _isPlugin = false;
         private string[] _parameter;
         private string _response;
@@ -40,17 +39,6 @@ namespace Server
             }
         }
 
-        /*
-        // ##########################################################################################################################################
-        public string PluginName
-        {
-            get
-            {
-                Console.WriteLine("ICH BIN DAS PLUGIN: " + _pluginName);
-                return _pluginName;
-            }
-        }
-        */
 
         // ##########################################################################################################################################
         public bool IsPlugin
